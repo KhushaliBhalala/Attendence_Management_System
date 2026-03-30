@@ -86,12 +86,14 @@ public class FacultyMaster implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedDate;
     @JoinColumn(name = "subject_id", referencedColumnName = "id")
-    @ManyToOne
-    @JsonbTransient
+    @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
+
     private SubjectMaster subjectId;
+
+    //  User 
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ManyToOne
-    @JsonbTransient
+    @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER) // EAGER add
+// @JsonbTransient  
     private UserMaster userId;
     @OneToMany(mappedBy = "facultyId")
     @JsonbTransient
@@ -252,5 +254,5 @@ public class FacultyMaster implements Serializable {
     public String toString() {
         return "com.mycompany.attendence_system.FacultyMaster[ id=" + id + " ]";
     }
-    
+
 }

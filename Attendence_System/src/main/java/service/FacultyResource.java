@@ -1,4 +1,5 @@
 package com.mycompany.attendence_system.rest;
+
 import com.mycompany.attendence_system.FacultyMaster;
 import com.mycompany.attendence_system.SubjectMaster;
 import ejb.FacultyBean;
@@ -19,7 +20,6 @@ public class FacultyResource {
     public List<FacultyMaster> getAllFaculties() {
         return facultyService.getAllFaculties();
     }
-   
 
     @POST
     @Path("add") // Matches BASE_URL + "/add" in your client
@@ -29,14 +29,42 @@ public class FacultyResource {
             @QueryParam("uname") String username,
             @QueryParam("pwd") String password,
             @QueryParam("subId") Integer subjectId) {
-        
+
         try {
             facultyService.addFaculty(faculty, username, password, subjectId);
             return Response.ok().build(); // Status 200
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                           .entity(e.getMessage())
-                           .build();
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    // FacultyResource.java 
+    @PUT
+    @Path("update")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateFaculty(
+            FacultyMaster faculty,
+            @QueryParam("uname") String username,
+            @QueryParam("pwd") String password,
+            @QueryParam("subId") Integer subjectId) {
+        try {
+            facultyService.updateFaculty(faculty, username, password, subjectId);
+            return Response.ok().build();
+        } catch (Exception e) {
+            return Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+
+    @DELETE
+    @Path("delete/{id}")
+    public Response deleteFaculty(@PathParam("id") Integer id) {
+        try {
+            facultyService.deleteFaculty(id);
+            return Response.ok().build();
+        } catch (Exception e) {
+            return Response.status(500).entity(e.getMessage()).build();
         }
     }
 }
