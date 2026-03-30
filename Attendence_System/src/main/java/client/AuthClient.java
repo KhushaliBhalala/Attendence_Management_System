@@ -42,7 +42,7 @@ public class AuthClient implements Serializable {
     private int roleId;
     private String message;
     private List<RoleMaster> roles;
-
+private UserMaster currentUser;
     private final String BASE_URL = "http://localhost:8080/Attendence_System/api/auth";
 
     public List<RoleMaster> getRoles() {
@@ -92,9 +92,10 @@ public class AuthClient implements Serializable {
                     if (userRole == 1) {
                         return "admin/admin_dashboard?faces-redirect=true";
                     }
-                    if (userRole == 2) {
-                        return "faculty_dashboard?faces-redirect=true";
+                    else if (userRole == 2) {
+                        return "/faculty/faculty_dashboard.xhtml?faces-redirect=true";
                     }
+                    
                     return "student_dashboard?faces-redirect=true";
                 }
                 return null;
@@ -139,5 +140,9 @@ public class AuthClient implements Serializable {
 
     public void setRoles(List<RoleMaster> roles) {
         this.roles = roles;
+    }
+    
+    public UserMaster getCurrentUser() {
+        return currentUser;
     }
 }

@@ -10,16 +10,17 @@ import java.util.List;
 
 @Stateless
 public class SubjectBean {
+
     @PersistenceContext(unitName = "my_persistence_unit")
     private EntityManager em;
-    
+
     public List<SubjectMaster> getAllSubjects() {
         return em.createNamedQuery("SubjectMaster.findAll", SubjectMaster.class).getResultList();
     }
-    
+
     public List<SemesterMaster> getAllSemesters() {
-    return em.createNamedQuery("SemesterMaster.findAll", SemesterMaster.class).getResultList();
-}
+        return em.createNamedQuery("SemesterMaster.findAll", SemesterMaster.class).getResultList();
+    }
 
     public void addSubject(String name, String code, int semesterId) {
         SubjectMaster sm = new SubjectMaster();
@@ -27,12 +28,12 @@ public class SubjectBean {
         sm.setSubjectCode(code);
         // Find the actual Semester object from DB
         SemesterMaster sem = em.find(SemesterMaster.class, semesterId);
-    if(sem != null) {
-        sm.setSemesterId(sem);
-        sm.setCreatedDate(new Date());
-        em.persist(sm);
-    } else {
-        throw new RuntimeException("Semester not found with ID: " + semesterId);
-    }
+        if (sem != null) {
+            sm.setSemesterId(sem);
+            sm.setCreatedDate(new Date());
+            em.persist(sm);
+        } else {
+            throw new RuntimeException("Semester not found with ID: " + semesterId);
+        }
     }
 }

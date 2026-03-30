@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head>
+        <title>Faculty Dashboard | Smart Attendance</title>
+        <h:outputStylesheet name="css/faculty.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    </h:head>
+
+    <h:body>
+        <div class="dashboard-wrapper">
+            <div class="header-glass">
+                <div class="user-info">
+                    <h1>Welcome, Professor</h1>
+                    <p>Manage your subjects, students, and attendance from one place.</p>
+                </div>
+            </div>
+
+          <div class="content-grid">
+    <p:link outcome="take_attendence" styleClass="action-card purple-shade">
+        <div class="icon-box"><i class="fas fa-user-check"></i></div>
+        <div class="card-text">
+            <h3>Take Attendance</h3>
+            <p>Mark presence for current lectures</p>
+        </div>
+    </p:link>
+
+<!--    <p:link outcome="import_students" styleClass="action-card blue-shade">
+        <div class="icon-box"><i class="fas fa-file-import"></i></div>
+        <div class="card-text">
+            <h3>Student Enrollment</h3>
+            <p>Import new students via Excel</p>
+        </div>
+    </p:link>-->
+
+<!--    <p:link outcome="reports" styleClass="action-card green-shade">
+        <div class="icon-box"><i class="fas fa-chart-pie"></i></div>
+        <div class="card-text">
+            <h3>Reports</h3>
+            <p>Analyze attendance percentage</p>
+        </div>
+    </p:link>-->
+</div>
+        </div>
+    </h:body>
+</ui:composition>

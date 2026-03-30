@@ -4,6 +4,7 @@
  */
 package com.mycompany.attendence_system;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -67,8 +68,10 @@ public class DivisionMaster implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedDate;
     @OneToMany(mappedBy = "divisionId")
+    @JsonbTransient
     private Collection<StudentMaster> studentMasterCollection;
     @OneToMany(mappedBy = "divisionId")
+    @JsonbTransient
     private Collection<ClassMaster> classMasterCollection;
 
     public DivisionMaster() {
@@ -132,7 +135,7 @@ public class DivisionMaster implements Serializable {
     public void setModifiedDate(Date modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
-
+@JsonbTransient
     @XmlTransient
     public Collection<StudentMaster> getStudentMasterCollection() {
         return studentMasterCollection;

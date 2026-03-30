@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -23,6 +24,7 @@ import java.io.Serializable;
 import java.util.Date;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import java.util.Collection;
 
 /**
  *
@@ -72,6 +74,17 @@ public class UserMaster implements Serializable {
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     @ManyToOne
     private RoleMaster roleId;
+    
+    @OneToMany(mappedBy = "userId")
+private Collection<FacultyMaster> facultyMasterCollection;
+    
+    public Integer getFacultyId() {
+    if (facultyMasterCollection != null && !facultyMasterCollection.isEmpty()) {
+        // Get the first faculty record associated with this user
+        return facultyMasterCollection.iterator().next().getId();
+    }
+    return null;
+}
 
     @PrePersist
     protected void onCreate() {
