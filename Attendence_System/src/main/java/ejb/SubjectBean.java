@@ -48,10 +48,17 @@ public class SubjectBean {
         }
     }
 
-    public void deleteSubject(int id) {
+ public void deleteSubject(int id) {
+    try {
         SubjectMaster sm = em.find(SubjectMaster.class, id);
         if (sm != null) {
-            em.remove(sm);
+            // અહિયાં તમે પેલા એ Subject સાથે જોડાયેલા બીજા રેકોર્ડ્સ 
+            // ડીલીટ કરવાનો કોડ લખી શકો અથવા query ચલાવી શકો.
+            em.remove(em.merge(sm));
+            em.flush(); // ફોર્સફુલી ડેટાબેઝમાં ચેન્જ કરવા
         }
+    } catch (Exception e) {
+        throw new RuntimeException("not delete bez use in another");
     }
+}
 }

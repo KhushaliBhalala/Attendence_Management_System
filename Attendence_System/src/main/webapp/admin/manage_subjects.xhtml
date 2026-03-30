@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
@@ -86,7 +86,7 @@
     </h:head>
     <h:body>
         <p:growl id="growl" showDetail="true" />
-
+      
         <div class="dashboard-container">
             <aside class="sidebar">
                 <div class="logo">
@@ -144,12 +144,16 @@
                                                  styleClass="ui-button-flat" 
                                                  style="color: var(--lilac-medium);" />
 
-                                <p:commandButton icon="pi pi-trash" 
-                                                 action="#{subjectClient.deleteSubject(subject.id)}"
-                                                 update=":subjectForm:dt-subjects :growl"
-                                                 styleClass="ui-button-flat" 
-                                                 style="color: #ff5252;">
-                                    <p:confirm header="Confirmation" message="Delete this subject?" icon="pi pi-exclamation-triangle" />
+                               <p:commandButton icon="pi pi-trash" 
+                 action="#{subjectClient.deleteSubject(subject.id)}"
+                 process="@this"
+                 update=":subjectForm:dt-subjects :growl"
+                 styleClass="ui-button-flat" 
+                 style="color: #ff5252;">
+    <p:confirm header="Confirmation" 
+               message="Are you sure you want to delete #{subject.subjectName}?" 
+               icon="pi pi-exclamation-triangle" />
+</p:commandButton>
                             </p:column>
                         </p:dataTable>
                     </h:form>
@@ -170,6 +174,14 @@
                   appendTo="@(body)">
 
             <h:form id="addForm">
+                  <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <p:commandButton value="Yes" type="button"
+                             styleClass="ui-confirmdialog-yes ui-button-danger"
+                             icon="pi pi-check"/>
+            <p:commandButton value="No" type="button"
+                             styleClass="ui-confirmdialog-no ui-button-secondary"
+                             icon="pi pi-times"/>
+        </p:confirmDialog>
                 <div class="ui-fluid modern-form-container">
                     <div style="text-align: center; margin-bottom: 25px;">
                         <div class="dialog-icon-circle">
@@ -224,5 +236,89 @@
                 </div>
             </h:form>
         </p:dialog>
+
+        <p:dialog header="Edit Subject" 
+                  widgetVar="editSubjectDlg" 
+                  modal="true" 
+                  resizable="false"
+                  draggable="false"
+                  responsive="true" 
+                  showEffect="fade"
+                  hideEffect="fade"
+                  styleClass="modern-dialog" 
+                  width="450"
+                  appendTo="@(body)">
+
+            <h:form id="editForm">
+                <div class="ui-fluid modern-form-container">
+
+                    <div style="text-align: center; margin-bottom: 25px;">
+                        <div class="dialog-icon-circle">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <p style="color: #666; font-size: 0.85rem; margin-top: 10px;">
+                            Update subject details
+                        </p>
+                    </div>
+
+                    <p:outputPanel id="edit-content">
+
+                        <!-- Subject Name -->
+                        <div class="field-wrapper">
+                            <p:outputLabel for="editName" value="Subject Name" styleClass="modern-label" />
+                            <div class="input-with-icon">
+                                <i class="fas fa-pen-nib"></i>
+                                <p:inputText id="editName" 
+                                             value="#{subjectClient.selectedSubject.subjectName}" 
+                                             required="true" />
+                            </div>
+                        </div>
+
+                        <!-- Subject Code -->
+                        <div class="field-wrapper">
+                            <p:outputLabel for="editCode" value="Subject Code" styleClass="modern-label" />
+                            <div class="input-with-icon">
+                                <i class="fas fa-barcode"></i>
+                                <p:inputText id="editCode" 
+                                             value="#{subjectClient.selectedSubject.subjectCode}" 
+                                             required="true" />
+                            </div>
+                        </div>
+
+                        <!-- Semester -->
+                        <div class="field-wrapper">
+                            <p:outputLabel for="editSem" value="Select Semester" styleClass="modern-label" />
+                            <p:selectOneMenu id="editSem" 
+                                             value="#{subjectClient.semesterId}" 
+                                             required="true" 
+                                             styleClass="modern-select">
+                                <f:selectItems value="#{subjectClient.allSemesters}" 
+                                               var="s" 
+                                               itemLabel="#{s.semesterNo}" 
+                                               itemValue="#{s.id}" />
+                            </p:selectOneMenu>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="button-footer">
+                            <p:commandButton value="Cancel" type="button" 
+                                             onclick="PF('editSubjectDlg').hide();" 
+                                             styleClass="ui-button-flat modern-cancel-btn" />
+
+                            <p:commandButton value="Update" 
+                                             action="#{subjectClient.updateSubject()}" 
+                                             update=":subjectForm:dt-subjects :growl"
+                                             oncomplete="PF('editSubjectDlg').hide()"
+                                             styleClass="modern-save-btn" 
+                                             icon="pi pi-check" />
+                        </div>
+
+                    </p:outputPanel>
+                </div>
+            </h:form>
+
+
+        </p:dialog> 
+
     </h:body>
 </html>

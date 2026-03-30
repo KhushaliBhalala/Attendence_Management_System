@@ -132,15 +132,35 @@ public class SubjectClient implements Serializable {
         client.close();
     }
 
-    public void deleteSubject(int id) {
-        Client client = ClientBuilder.newClient();
+  public void deleteSubject(int id) {
+    Client client = ClientBuilder.newClient();
+    try {
         Response res = client.target(BASE_URL + "/delete/" + id).request().delete();
+        
         if (res.getStatus() == 200) {
-            this.subjectList = null; // Refresh list
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Subject Deleted"));
+            this.subjectList = null; // લિસ્ટ રિફ્રેશ કરવા માટે
+            FacesContext.getCurrentInstance().addMessage(null, 
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Subject Deleted"));
+        } else {
+            // જો delete ના થાય તો શું error આવે છે તે જોવા માટે
+            String error = res.readEntity(String.class);
+            FacesContext.getCurrentInstance().addMessage(null, 
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Could not delete: " + error));
         }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
         client.close();
     }
+}
+    
+    public SubjectMaster getSelectedSubject() {
+    return selectedSubject;
+}
+
+public void setSelectedSubject(SubjectMaster selectedSubject) {
+    this.selectedSubject = selectedSubject;
+}
 
     // Getters and Setters...
     public String getSubjectName() {
