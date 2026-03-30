@@ -1,0 +1,285 @@
+:root {
+    /* Exact Lilac Shades from your attachment */
+    --lilac-dark: #1a1438;    /* Sidebars / Titles */
+    --lilac-medium: #5a4f9f;  /* Primary Buttons */
+    --lilac-soft: #9085c9;    /* Borders / Accents */
+    --lilac-light: #e4e1f5;   /* Background */
+    --lilac-white: #f8f7ff;   /* Card Background */
+    --glass-bg: rgba(255, 255, 255, 0.85);
+}
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #e4e1f5 0%, #ffffff 100%);
+    background-attachment: fixed;
+    color: var(--lilac-dark);
+}
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- Premium Sidebar --- */
+.sidebar {
+    width: 270px;
+    background-color: var(--lilac-dark);
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 10px 0 30px rgba(26, 20, 56, 0.1);
+}
+
+.sidebar .logo {
+    color: var(--lilac-light);
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 50px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    letter-spacing: 1px;
+}
+
+.menu a {
+    color: #b7b0e1;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    border-radius: 16px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.menu a:hover, .menu a.active {
+    background: rgba(228, 225, 245, 0.15);
+    color: #ffffff;
+    transform: translateX(8px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* --- Main Content Area --- */
+.main-content {
+    flex: 1;
+    padding: 40px 50px;
+}
+
+.top-nav h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--lilac-dark);
+}
+
+/* --- Floating Glass Stat Cards --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.stat-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 35px;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(90, 79, 159, 0.08);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 30px 60px rgba(90, 79, 159, 0.15);
+}
+
+/* Icon & Label Styling */
+.stat-card i {
+    position: absolute;
+    right: -10px;
+    bottom: -10px;
+    font-size: 100px;
+    color: var(--lilac-light);
+    opacity: 0.3;
+}
+
+.stat-card h3 {
+    margin: 0;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--lilac-soft);
+}
+
+.stat-card p {
+    margin: 15px 0 0 0;
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--lilac-dark);
+}
+
+/* Special Accents for Cards */
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 6px; height: 100%;
+    background: var(--lilac-medium);
+}
+
+/* --- Quick Action Buttons --- */
+.custom-panel {
+    background: transparent !important;
+    border: none !important;
+    margin-top: 50px;
+}
+
+.ui-button-help {
+    background: var(--lilac-medium) !important;
+    border-radius: 12px !important;
+    padding: 10px 20px !important;
+    border: none !important;
+    box-shadow: 0 10px 20px rgba(90, 79, 159, 0.3) !important;
+}
+
+.ui-button-secondary {
+    background: var(--lilac-soft) !important;
+    border-radius: 12px !important;
+    border: none !important;
+}
+
+/* Force the dialog to allow the footer to exist */
+.premium-dialog {
+    height: auto !important;
+    max-height: 90vh;
+    display: flex !important;
+    flex-direction: column;
+}
+
+/* Ensure the content doesn't 'eat' the footer's space */
+.premium-dialog .ui-dialog-content {
+    flex-grow: 1;
+    overflow-y: auto !important;
+    padding-bottom: 10px !important;
+}
+
+/* Explicitly force the footer to be visible at the bottom */
+.premium-dialog .ui-dialog-footer {
+    display: block !important;
+    visibility: visible !important;
+    position: relative !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    background: #f8f7ff !important;
+    border-top: 1px solid #e4e1f5 !important;
+    padding: 15px 25px !important;
+    text-align: right !important;
+    box-sizing: border-box !important;
+}
+
+/* Modern Dialog Styling */
+.modern-dialog.ui-dialog {
+    border: none !important;
+    border-radius: 20px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    overflow: hidden;
+}
+
+.modern-dialog .ui-dialog-titlebar {
+    background: #f8f9fa !important;
+    color: #2d3436 !important;
+    font-weight: 700 !important;
+    font-size: 1.2rem !important;
+    padding: 20px !important;
+    border-bottom: 1px solid #eee !important;
+}
+
+.modern-form-container {
+    padding: 10px 5px;
+}
+
+/* Icon Circle */
+.dialog-icon-circle {
+    width: 60px;
+    height: 60px;
+    background: #f3f0ff;
+    color: #6c5ce7;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+/* Field Wrappers */
+.field-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+.modern-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+/* Input with Icon */
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a29bfe;
+    z-index: 10;
+}
+
+.input-with-icon .ui-inputfield {
+    padding-left: 35px !important;
+    border-radius: 10px !important;
+    border: 1.5px solid #eee !important;
+    transition: all 0.3s;
+}
+
+.input-with-icon .ui-inputfield:focus {
+    border-color: #6c5ce7 !important;
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1) !important;
+}
+
+/* Custom Select */
+.modern-select {
+    border-radius: 10px !important;
+    border: 1.5px solid #eee !important;
+}
+
+/* Footer Buttons */
+.button-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.modern-save-btn {
+    background: #6c5ce7 !important;
+    border: none !important;
+    padding: 8px 20px !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+}
+
+.modern-cancel-btn {
+    color: #888 !important;
+    font-weight: 600 !important;
+}

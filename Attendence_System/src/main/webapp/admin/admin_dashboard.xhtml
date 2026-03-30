@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Admin Dashboard | Smart Attendance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet" />
+    <h:outputStylesheet name="css/dashboard.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</h:head>
+<h:body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-shield-halved"></i>
+                <span>Smart Attendance</span>
+            </div>
+            <nav class="menu">
+                <h:link outcome="admin_dashboard.xhtml" styleClass="active"><i class="fas fa-chart-line"></i> Dashboard</h:link>
+                <h:link outcome="manage_faculty.xhtml"><i class="fas fa-chalkboard-teacher"></i> Manage Faculty</h:link>
+                <h:link outcome="manage_students.xhtml"><i class="fas fa-user-graduate"></i> Manage Students</h:link>
+                <h:link outcome="manage_subjects.xhtml"><i class="fas fa-book"></i> Subjects</h:link>
+                <h:link outcome="view_reports.xhtml"><i class="fas fa-file-invoice"></i> Attendance Reports</h:link>
+                <h:form>
+                    <p:commandLink action="#{authBean.logout()}" styleClass="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </p:commandLink>
+                </h:form>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-nav">
+                <h2>Welcome, Admin</h2>
+                <div class="user-profile">
+                    <span>Admin Profile</span>
+                    <p:graphicImage value="/resources/images/admin-avatar.png" width="40" rendered="false"/>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card purple">
+                    <i class="fas fa-users"></i>
+                    <div class="info">
+                        <h3>Total Students</h3>
+                        <p>1,250</p> 
+                    </div>
+                </div>
+                <div class="stat-card lavender">
+                    <i class="fas fa-user-tie"></i>
+                    <div class="info">
+                        <h3>Total Faculty</h3>
+                        <p>45</p>
+                    </div>
+                </div>
+                <div class="stat-card purple-light">
+                    <i class="fas fa-calendar-check"></i>
+                    <div class="info">
+                        <h3>Today's Attendance</h3>
+                        <p>85%</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recent-activity">
+                <h3>System Overview</h3>
+                <p:panel header="Quick Actions" styleClass="custom-panel">
+                    <div class="action-buttons">
+                        <p:button value="Add Faculty" icon="pi pi-plus" outcome="manage_faculty.xhtml" styleClass="ui-button-raised ui-button-help"/>
+                        <p:button value="Add Student" icon="pi pi-plus" outcome="manage_students.xhtml" styleClass="ui-button-raised ui-button-secondary"/>
+                        <p:button value="Generate Report" icon="pi pi-file" outcome="view_reports.xhtml" styleClass="ui-button-outlined ui-button-help"/>
+                    </div>
+                </p:panel>
+            </div>
+        </main>
+    </div>
+</h:body>
+</html>

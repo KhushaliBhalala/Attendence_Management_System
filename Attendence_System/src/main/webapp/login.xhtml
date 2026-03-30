@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Secure Access | Smart Attendance</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+            :root {
+                --primary-purple: #6750A4;
+                --dark-purple: #21005D;
+                --light-lilac: #F3E5F5;
+                --surface: #FFFFFF;
+                --outline: #CAC4D0;
+            }
+
+            body {
+                background: linear-gradient(135deg, #F3E5F5 0%, #D1C4E9 100%);
+                font-family: 'Segoe UI', Tahoma, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                margin: 0;
+            }
+
+            .login-wrapper {
+                background: var(--surface);
+                width: 100%;
+                max-width: 380px;
+                padding: 2.5rem;
+                border-radius: 24px;
+                box-shadow: 0 12px 40px rgba(103, 80, 164, 0.15);
+                text-align: center;
+            }
+
+            .brand-logo {
+                background: var(--light-lilac);
+                width: 50px;
+                height: 50px;
+                line-height: 50px;
+                border-radius: 12px;
+                margin: 0 auto 1rem;
+                color: var(--primary-purple);
+                font-size: 1.5rem;
+            }
+
+            .login-title {
+                color: var(--dark-purple);
+                font-size: 1.6rem;
+                font-weight: 700;
+                margin: 0 0 5px 0;
+            }
+
+            .login-subtitle {
+                color: #625B71;
+                font-size: 0.85rem;
+                margin-bottom: 2rem;
+            }
+
+            /* Essential Fix: Making all 3 fields identical in size */
+            .form-control-custom {
+                width: 100% !important;
+                height: 48px !important; /* Fixed Uniform Height */
+                box-sizing: border-box !important; /* Ensures padding doesn't affect width */
+                margin-bottom: 1.2rem !important;
+                display: block !important;
+            }
+
+            .ui-inputfield {
+                padding: 0 16px !important;
+                border-radius: 12px !important;
+                border: 1.5px solid var(--outline) !important;
+                font-size: 0.95rem !important;
+                transition: border-color 0.2s;
+            }
+
+            .ui-inputfield:focus {
+                border-color: var(--primary-purple) !important;
+                box-shadow: 0 0 0 3px rgba(103, 80, 164, 0.1) !important;
+            }
+
+            /* PrimeFaces SelectOneMenu Specific Styling */
+            .ui-selectonemenu {
+                border-radius: 12px !important;
+                border: 1.5px solid var(--outline) !important;
+                background: #ffffff !important;
+            }
+
+            .ui-selectonemenu-label {
+                text-align: left !important;
+                padding: 12px 16px !important; /* Matches InputText padding */
+                font-size: 0.95rem !important;
+                color: #49454F !important;
+            }
+
+            .ui-selectonemenu-trigger {
+                width: 35px !important;
+                background: transparent !important;
+                border: none !important;
+            }
+
+            /* Login Button Styling */
+            .btn-signin {
+                width: 100%;
+                background: var(--primary-purple) !important;
+                border: none !important;
+                padding: 14px !important;
+                border-radius: 100px !important;
+                color: #ffffff !important;
+                font-weight: 600 !important;
+                font-size: 1rem !important;
+                box-shadow: 0 4px 12px rgba(103, 80, 164, 0.2) !important;
+                cursor: pointer;
+                transition: background 0.3s !important;
+            }
+
+            .btn-signin:hover {
+                background: var(--dark-purple) !important;
+            }
+
+            .back-nav {
+                margin-top: 1.5rem;
+            }
+
+            .back-nav a {
+                color: var(--primary-purple);
+                text-decoration: none;
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <div class="login-wrapper">
+            <div class="brand-section">
+                <div class="brand-logo">
+                    <i class="pi pi-shield"></i>
+                </div>
+                <h1 class="login-title">Portal Access</h1>
+                <p class="login-subtitle">Attendance Management System</p>
+            </div>
+
+            <h:form id="loginForm">
+                <p:messages id="msgs" closable="true">
+                    <p:autoUpdate />
+                </p:messages>
+
+                <div class="field-container">
+                    <p:selectOneMenu id="role" value="#{AuthClient.roleId}" required="true" 
+                                     styleClass="form-control-custom">
+                        <f:selectItem itemLabel="Select Your Role" itemValue="" noSelectionOption="true" />
+
+                        <f:selectItems value="#{AuthClient.roles}" 
+                                       var="r" 
+                                       itemLabel="#{r.roleName}" 
+                                       itemValue="#{r.id}" />
+                    </p:selectOneMenu>
+
+                    <p:inputText id="username" placeholder="Username" 
+                                 value="#{AuthClient.username}" required="true" 
+                                 styleClass="form-control-custom" />
+
+                    <p:password id="password" placeholder="Password" 
+                                value="#{AuthClient.password}" required="true" 
+                                styleClass="form-control-custom" />
+
+                    <p:commandButton value="Sign In to System" 
+                                     action="#{AuthClient.doLogin}" 
+                                     ajax="false"
+                                     styleClass="btn-signin" 
+                                     />
+                </div>
+
+                <div class="back-nav">
+                    <p:link outcome="index">
+                        <i class="pi pi-arrow-left" style="font-size: 0.7rem;"></i> Back to Welcome
+                    </p:link>
+                </div>
+            </h:form>
+        </div>
+    </h:body>
+</html>
