@@ -9,21 +9,79 @@
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet" />
         <h:outputStylesheet name="css/dashboard.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-        
+
         <style>
-            .modern-dialog.ui-dialog { border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: none; }
-            .modern-dialog .ui-dialog-titlebar { background: transparent; border: none; padding: 20px; font-family: 'Poppins'; }
-            .dialog-icon-circle { width: 50px; height: 50px; background: #f3f0ff; color: #6c5ce7; border-radius: 50%; 
-                                  display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1.5rem; }
-            .field-wrapper { margin-bottom: 20px; text-align: left; }
-            .modern-label { font-weight: 600; margin-bottom: 8px; display: block; color: #444; font-size: 0.9rem; }
-            .input-with-icon { position: relative; display: flex; align-items: center; }
-            .input-with-icon i { position: absolute; left: 15px; color: #a29bfe; z-index: 2; }
-            .input-with-icon .ui-inputfield { padding-left: 40px !important; border-radius: 10px !important; border: 1.5px solid #eee !important; }
-            .modern-select { border-radius: 10px !important; border: 1.5px solid #eee !important; }
-            .button-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; padding-top: 15px; border-top: 1px solid #f0f0f0; }
-            .modern-save-btn { background: #6c5ce7 !important; border: none !important; border-radius: 8px !important; padding: 5px 20px !important; }
-            .modern-cancel-btn { color: #888 !important; }
+            .modern-dialog.ui-dialog {
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                border: none;
+            }
+            .modern-dialog .ui-dialog-titlebar {
+                background: transparent;
+                border: none;
+                padding: 20px;
+                font-family: 'Poppins';
+            }
+            .dialog-icon-circle {
+                width: 50px;
+                height: 50px;
+                background: #f3f0ff;
+                color: #6c5ce7;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto;
+                font-size: 1.5rem;
+            }
+            .field-wrapper {
+                margin-bottom: 20px;
+                text-align: left;
+            }
+            .modern-label {
+                font-weight: 600;
+                margin-bottom: 8px;
+                display: block;
+                color: #444;
+                font-size: 0.9rem;
+            }
+            .input-with-icon {
+                position: relative;
+                display: flex;
+                align-items: center;
+            }
+            .input-with-icon i {
+                position: absolute;
+                left: 15px;
+                color: #a29bfe;
+                z-index: 2;
+            }
+            .input-with-icon .ui-inputfield {
+                padding-left: 40px !important;
+                border-radius: 10px !important;
+                border: 1.5px solid #eee !important;
+            }
+            .modern-select {
+                border-radius: 10px !important;
+                border: 1.5px solid #eee !important;
+            }
+            .button-footer {
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+                margin-top: 20px;
+                padding-top: 15px;
+                border-top: 1px solid #f0f0f0;
+            }
+            .modern-save-btn {
+                background: #6c5ce7 !important;
+                border: none !important;
+                border-radius: 8px !important;
+                padding: 5px 20px !important;
+            }
+            .modern-cancel-btn {
+                color: #888 !important;
+            }
         </style>
     </h:head>
     <h:body>
@@ -80,8 +138,18 @@
                             </p:column>
 
                             <p:column headerText="Actions">
-                                <p:commandButton icon="pi pi-pencil" styleClass="ui-button-flat" style="color: var(--lilac-medium);" />
-                                <p:commandButton icon="pi pi-trash" styleClass="ui-button-flat" style="color: #ff5252;" />
+                                <p:commandButton icon="pi pi-pencil" 
+                                                 action="#{subjectClient.prepareEdit(subject)}"
+                                                 update=":editForm"
+                                                 styleClass="ui-button-flat" 
+                                                 style="color: var(--lilac-medium);" />
+
+                                <p:commandButton icon="pi pi-trash" 
+                                                 action="#{subjectClient.deleteSubject(subject.id)}"
+                                                 update=":subjectForm:dt-subjects :growl"
+                                                 styleClass="ui-button-flat" 
+                                                 style="color: #ff5252;">
+                                    <p:confirm header="Confirmation" message="Delete this subject?" icon="pi pi-exclamation-triangle" />
                             </p:column>
                         </p:dataTable>
                     </h:form>

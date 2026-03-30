@@ -47,4 +47,27 @@ public class SubjectResource {
             return Response.status(500).entity("{\"error\": \"" + e.getMessage() + "\"}").build();
         }
     }
+
+    @PUT
+    @Path("update/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response update(@PathParam("id") int id, SubjectMaster sm) {
+        try {
+            sb.updateSubject(id, sm.getSubjectName(), sm.getSubjectCode(), sm.getSemesterId().getId());
+            return Response.ok("{\"message\": \"Updated\"}").build();
+        } catch (Exception e) {
+            return Response.status(500).build();
+        }
+    }
+
+    @DELETE
+    @Path("delete/{id}")
+    public Response delete(@PathParam("id") int id) {
+        try {
+            sb.deleteSubject(id);
+            return Response.ok("{\"message\": \"Deleted\"}").build();
+        } catch (Exception e) {
+            return Response.status(500).build();
+        }
+    }
 }

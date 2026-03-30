@@ -47,16 +47,17 @@ public class SubjectClient implements Serializable {
         return subjectList;
     }
 
- public List<SemesterMaster> getAllSemesters() {
+    public List<SemesterMaster> getAllSemesters() {
         if (allSemesters == null) {
             Client client = ClientBuilder.newClient();
             try {
-                allSemesters = client.target("http://localhost:8080/Attendence_System/api/subjects/semesters")
+                allSemesters = client.target("http://localhost:8081/Attendence_System/api/subjects/semesters")
                         .request(MediaType.APPLICATION_JSON)
-                        .get(new GenericType<List<SemesterMaster>>() {});
-                
+                        .get(new GenericType<List<SemesterMaster>>() {
+                        });
+
                 System.out.println("Semesters loaded: " + (allSemesters != null ? allSemesters.size() : 0));
-                
+
             } catch (Exception e) {
                 System.out.println("Semester Load Error: " + e.getMessage());
                 e.printStackTrace();
@@ -103,6 +104,42 @@ public class SubjectClient implements Serializable {
             client.close();
         }
         return null;
+    }
+
+    // Add this field + Getter/Setter
+    private SubjectMaster selectedSubject = new SubjectMaster();
+
+    public void prepareEdit(SubjectMaster subject) {
+        this.selectedSubject = subject;
+        this.semesterId = subject.getSemesterId().getId(); // Set dropdown value
+        PF.current().executeScript("PF('editSubjectDlg').show()");
+    }
+
+    public void updateSubject() {
+        Client client = ClientBuilder.newClient();
+        SemesterMaster sem = new SemesterMaster();
+        sem.setId(this.semesterId);
+        selectedSubject.setSemesterId(sem);
+
+        Response res = client.target(BASE_URL + "/update/" + selectedSubject.getId())
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(selectedSubject, MediaType.APPLICATION_JSON));
+
+        if (res.getStatus() == 200) {
+            this.subjectList = null; // Refresh list
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Subject Updated"));
+        }
+        client.close();
+    }
+
+    public void deleteSubject(int id) {
+        Client client = ClientBuilder.newClient();
+        Response res = client.target(BASE_URL + "/delete/" + id).request().delete();
+        if (res.getStatus() == 200) {
+            this.subjectList = null; // Refresh list
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Subject Deleted"));
+        }
+        client.close();
     }
 
     // Getters and Setters...
