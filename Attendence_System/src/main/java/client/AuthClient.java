@@ -39,7 +39,7 @@ public class AuthClient implements Serializable {
 
     private String username;
     private String password;
-    private Integer roleId;
+    private int roleId;
     private String message;
     private List<RoleMaster> roles;
 
@@ -72,6 +72,8 @@ public class AuthClient implements Serializable {
         RoleMaster rm = new RoleMaster();
         rm.setId(roleId);
         userReq.setRoleId(rm);
+        
+        System.out.println("UI Role ID : " + roleId);
 
         try {
             Response res = client.target(BASE_URL + "/login")
@@ -109,6 +111,7 @@ public class AuthClient implements Serializable {
             client.close();
         }
     }
+
     // --- Getters and Setters ---
     public String getUsername() {
         return username;

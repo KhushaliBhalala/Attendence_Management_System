@@ -6,7 +6,7 @@ package service;
 
 import com.mycompany.attendence_system.*;
 import ejb.AdminService;
-import ejb.AuthService;
+import ejb.AuthBean;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.*;
@@ -25,7 +25,7 @@ import java.util.*;
 @Consumes(MediaType.APPLICATION_JSON)
 public class AuthResource {
     @Inject
-    private AuthService authService;
+    private AuthBean authService;
 
     @Inject
     private AdminService adminService;

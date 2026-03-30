@@ -37,10 +37,8 @@ import java.util.Date;
     @NamedQuery(name = "SubjectMaster.findById", query = "SELECT s FROM SubjectMaster s WHERE s.id = :id"),
     @NamedQuery(name = "SubjectMaster.findBySubjectName", query = "SELECT s FROM SubjectMaster s WHERE s.subjectName = :subjectName"),
     @NamedQuery(name = "SubjectMaster.findBySubjectCode", query = "SELECT s FROM SubjectMaster s WHERE s.subjectCode = :subjectCode"),
-    @NamedQuery(name = "SubjectMaster.findByCreatedBy", query = "SELECT s FROM SubjectMaster s WHERE s.createdBy = :createdBy"),
-    @NamedQuery(name = "SubjectMaster.findByCreatedDate", query = "SELECT s FROM SubjectMaster s WHERE s.createdDate = :createdDate"),
-    @NamedQuery(name = "SubjectMaster.findByModifiedBy", query = "SELECT s FROM SubjectMaster s WHERE s.modifiedBy = :modifiedBy"),
-    @NamedQuery(name = "SubjectMaster.findByModifiedDate", query = "SELECT s FROM SubjectMaster s WHERE s.modifiedDate = :modifiedDate")})
+    @NamedQuery(name = "SubjectMaster.findByCreatedDate", query = "SELECT s FROM SubjectMaster s WHERE s.createdDate = :createdDate")
+   })
 public class SubjectMaster implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -57,23 +55,13 @@ public class SubjectMaster implements Serializable {
     @Size(max = 20)
     @Column(name = "subject_code")
     private String subjectCode;
-    @Column(name = "created_by")
-    private Integer createdBy;
     @Basic(optional = false)
     @NotNull
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
-    @Column(name = "modified_by")
-    private Integer modifiedBy;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "modified_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date modifiedDate;
     @JoinColumn(name = "semester_id", referencedColumnName = "id")
     @ManyToOne
-    @JsonbTransient
     private SemesterMaster semesterId;
 
     public SubjectMaster() {
@@ -87,7 +75,6 @@ public class SubjectMaster implements Serializable {
         this.id = id;
         this.subjectName = subjectName;
         this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
     }
 
     public Integer getId() {
@@ -114,14 +101,7 @@ public class SubjectMaster implements Serializable {
         this.subjectCode = subjectCode;
     }
 
-    public Integer getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(Integer createdBy) {
-        this.createdBy = createdBy;
-    }
-
+   
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -130,21 +110,9 @@ public class SubjectMaster implements Serializable {
         this.createdDate = createdDate;
     }
 
-    public Integer getModifiedBy() {
-        return modifiedBy;
-    }
+  
 
-    public void setModifiedBy(Integer modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
-
-    public Date getModifiedDate() {
-        return modifiedDate;
-    }
-
-    public void setModifiedDate(Date modifiedDate) {
-        this.modifiedDate = modifiedDate;
-    }
+   
 
     public SemesterMaster getSemesterId() {
         return semesterId;

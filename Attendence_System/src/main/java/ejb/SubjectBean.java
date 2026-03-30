@@ -26,9 +26,13 @@ public class SubjectBean {
         sm.setSubjectName(name);
         sm.setSubjectCode(code);
         // Find the actual Semester object from DB
-        sm.setSemesterId(em.find(SemesterMaster.class, semesterId));
+        SemesterMaster sem = em.find(SemesterMaster.class, semesterId);
+    if(sem != null) {
+        sm.setSemesterId(sem);
         sm.setCreatedDate(new Date());
-        sm.setModifiedDate(new Date());
         em.persist(sm);
+    } else {
+        throw new RuntimeException("Semester not found with ID: " + semesterId);
+    }
     }
 }

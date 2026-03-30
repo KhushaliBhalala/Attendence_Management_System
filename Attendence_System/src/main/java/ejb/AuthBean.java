@@ -5,6 +5,7 @@
 package ejb;
 
 import com.mycompany.attendence_system.UserMaster;
+import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -14,6 +15,7 @@ import jakarta.persistence.PersistenceContext;
  * @author HP
  */
 @Stateless
+@LocalBean
 public class AuthBean {
     
     @PersistenceContext(unitName = "my_persistence_unit")
