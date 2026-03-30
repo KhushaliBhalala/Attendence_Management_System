@@ -24,7 +24,7 @@ public class SubjectClient implements Serializable {
     private Integer semesterId;
     private List<SubjectMaster> subjectList;
 
-    private final String BASE_URL = "http://localhost:8080/Attendence_System/api/subjects";
+    private final String BASE_URL = "http://localhost:8081/Attendence_System/api/subjects";
     private List<SemesterMaster> allSemesters;
 
     public List<SubjectMaster> getSubjectList() {

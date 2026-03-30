@@ -28,7 +28,7 @@ public class UserClient {
 
         Client client = ClientBuilder.newClient();
 
-        String url = "http://localhost:8080/Attendence_System/api/users";
+        String url = "http://localhost:8081/Attendence_System/api/users";
 
         UserMaster u = new UserMaster();
         u.setUsername(username);

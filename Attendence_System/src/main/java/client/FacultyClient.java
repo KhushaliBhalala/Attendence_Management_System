@@ -32,7 +32,7 @@ public class FacultyClient implements Serializable {
     private Integer selectedSubjectId;
     private List<FacultyMaster> facultyList;
 
-    private final String BASE_URL = "http://localhost:8080/Attendence_System/api/faculty";    
+    private final String BASE_URL = "http://localhost:8081/Attendence_System/api/faculty";    
  
 
 
