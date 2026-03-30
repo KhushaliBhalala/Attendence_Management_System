@@ -53,8 +53,9 @@ public class SemesterMaster implements Serializable {
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
-
+   
     @OneToMany(mappedBy = "semesterId")
+     @JsonbTransient
     private Collection<SubjectMaster> subjectMasterCollection;
 
     @JsonbTransient
@@ -73,8 +74,6 @@ public class SemesterMaster implements Serializable {
         this.id = id;
     }
 
-   
-
     public Integer getId() {
         return id;
     }
@@ -90,7 +89,7 @@ public class SemesterMaster implements Serializable {
     public void setSemesterNo(int semesterNo) {
         this.semesterNo = semesterNo;
     }
-    
+
     public Date getCreatedDate() {
         return createdDate;
     }
