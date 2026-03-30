@@ -13,7 +13,9 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
+import org.primefaces.PF;
 
 @Named(value = "subjectClient")
 @SessionScoped
@@ -44,28 +46,34 @@ public class SubjectClient implements Serializable {
         }
         return subjectList;
     }
-    
-    public List<SemesterMaster> getAllSemesters() {
-    if (allSemesters == null) {
-        Client client = ClientBuilder.newClient();
-        try {
-            allSemesters = client.target("http://localhost:8080/Attendence_System/api/subjects/semesters")
-                    .request(MediaType.APPLICATION_JSON)
-                    .get(new GenericType<List<SemesterMaster>>() {});
-        } catch (Exception e) {
-            System.out.println("Semester Load Error: " + e.getMessage());
-        } finally {
-            client.close();
+
+ public List<SemesterMaster> getAllSemesters() {
+        if (allSemesters == null) {
+            Client client = ClientBuilder.newClient();
+            try {
+                allSemesters = client.target("http://localhost:8080/Attendence_System/api/subjects/semesters")
+                        .request(MediaType.APPLICATION_JSON)
+                        .get(new GenericType<List<SemesterMaster>>() {});
+                
+                System.out.println("Semesters loaded: " + (allSemesters != null ? allSemesters.size() : 0));
+                
+            } catch (Exception e) {
+                System.out.println("Semester Load Error: " + e.getMessage());
+                e.printStackTrace();
+            } finally {
+                client.close();
+            }
         }
+        return allSemesters;
     }
-    return allSemesters;
-}
 
     public String addSubject() {
         Client client = ClientBuilder.newClient();
+
         SubjectMaster newSubject = new SubjectMaster();
         newSubject.setSubjectName(subjectName);
         newSubject.setSubjectCode(subjectCode);
+        newSubject.setCreatedDate(new Date());
 
         SemesterMaster sem = new SemesterMaster();
         sem.setId(semesterId);
@@ -85,7 +93,7 @@ public class SubjectClient implements Serializable {
                 this.subjectCode = "";
                 this.semesterId = null;
                 this.subjectList = null; // CRITICAL: Forces re-fetch on next GET
-
+                PF.current().executeScript("PF('addSubjectDlg').hide()");
                 return null; // Stay on page for AJAX update
             }
         } catch (Exception e) {

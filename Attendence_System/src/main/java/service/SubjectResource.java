@@ -1,7 +1,7 @@
 package service;
 
 import com.mycompany.attendence_system.SemesterMaster;
-import ejb.SubjectService;
+import ejb.SubjectBean;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.ws.rs.*;
@@ -15,7 +15,7 @@ import com.mycompany.attendence_system.SubjectMaster;
 public class SubjectResource {
 
     @EJB
-    private SubjectService sb;
+    private SubjectBean sb;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
