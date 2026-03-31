@@ -7,27 +7,33 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
     <h:head>
-        <title>Take Attendance | Smart Attendance</title>
+        <title>Attendance | Smart Attendance</title>
         <h:outputStylesheet name="css/faculty.css" />
     </h:head>
 
     <h:body>
         <h:form id="attendanceForm" enctype="multipart/form-data">
             <p:growl id="msgs" showDetail="true" />
-            
-            <p:panel header="Attendance Management">
+
+            <p:panel header="Faculty Attendance Portal">
+                <h:outputText value="Logged in as: #{AuthClient.currentUser.username}" style="font-weight:bold; color: #6750A4; display:block; margin-bottom:10px" />
+
                 <h:panelGrid columns="4" cellpadding="10">
                     <p:outputLabel for="subject" value="Subject:" />
-                    <p:selectOneMenu id="subject" value="#{facultyAttendanceClient.selectedSubject}" required="true">
-                        <f:selectItem itemLabel="Select Subject" itemValue="" noSelectionOption="true" />
-                        <f:selectItems value="#{facultyAttendanceClient.allSubjects}" var="s" 
-                                       itemLabel="#{s.subjectName}" itemValue="#{s.id}" />
+                    <p:selectOneMenu id="subject" value="#{facultyAttendanceClient.selectedSubject}" 
+                                     required="true" styleClass="form-control-custom">
+                        <f:selectItem itemLabel="-- Select Subject --" itemValue="0" noSelectionOption="true" />
+                        <f:selectItems value="#{facultyAttendanceClient.allSubjects}" 
+                                       var="s" 
+                                       itemLabel="#{s.subjectName}" 
+                                       itemValue="#{s.id}" />
+                        <p:ajax listener="#{facultyAttendanceClient.loadStudents}" update="studentTable" />
                     </p:selectOneMenu>
 
                     <p:outputLabel for="division" value="Division:" />
                     <p:selectOneMenu id="division" value="#{facultyAttendanceClient.selectedDivision}" required="true">
                         <p:ajax listener="#{facultyAttendanceClient.loadStudents}" update="studentArea msgs" />
-                        <f:selectItem itemLabel="Select Division" itemValue="" noSelectionOption="true" />
+                        <f:selectItem itemLabel="-- Select Division --" itemValue="" />
                         <f:selectItems value="#{facultyAttendanceClient.allDivisions}" var="d" 
                                        itemLabel="#{d.divisionName}" itemValue="#{d.id}" />
                     </p:selectOneMenu>
@@ -42,21 +48,17 @@
 
                 <p:dataTable id="studentTable" value="#{facultyAttendanceClient.students}" var="stu" 
                              rendered="#{not empty facultyAttendanceClient.students}">
-                    <p:column headerText="Enrollment No">
-                        <h:outputText value="#{stu.enrollmentNo}" />
-                    </p:column>
-                    <p:column headerText="Student Name">
-                        <h:outputText value="#{stu.name}" />
-                    </p:column>
-                    <p:column headerText="Status">
+                    <p:column headerText="Enrollment No">#{stu.enrollmentNo}</p:column>
+                    <p:column headerText="Student Name">#{stu.name}</p:column>
+                    <p:column headerText="Attendance">
                         <p:selectOneButton value="#{stu.tempStatus}">
-                            <f:selectItem itemLabel="P" itemValue="P" />
-                            <f:selectItem itemLabel="A" itemValue="A" />
+                            <f:selectItem itemLabel="Present" itemValue="P" />
+                            <f:selectItem itemLabel="Absent" itemValue="A" />
                         </p:selectOneButton>
                     </p:column>
                 </p:dataTable>
-                
-                <p:commandButton value="Submit Attendance" action="#{facultyAttendanceClient.submit}" 
+
+                <p:commandButton value="Save Attendance" action="#{facultyAttendanceClient.submit}" 
                                  rendered="#{not empty facultyAttendanceClient.students}" style="margin-top:15px" />
             </p:outputPanel>
         </h:form>

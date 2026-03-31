@@ -78,6 +78,18 @@ public class UserMaster implements Serializable {
     @OneToMany(mappedBy = "userId")
 private Collection<FacultyMaster> facultyMasterCollection;
     
+    @jakarta.persistence.Transient 
+private Integer facultyIdForSession;
+    
+    // Add these Getter and Setter
+public Integer getFacultyIdForSession() {
+    return facultyIdForSession;
+}
+
+public void setFacultyIdForSession(Integer facultyIdForSession) {
+    this.facultyIdForSession = facultyIdForSession;
+}
+    
     public Integer getFacultyId() {
     if (facultyMasterCollection != null && !facultyMasterCollection.isEmpty()) {
         // Get the first faculty record associated with this user

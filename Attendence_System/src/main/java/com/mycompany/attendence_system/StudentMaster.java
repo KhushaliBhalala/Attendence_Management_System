@@ -40,7 +40,7 @@ import java.util.Date;
     @NamedQuery(name = "StudentMaster.findByMobileNo", query = "SELECT s FROM StudentMaster s WHERE s.mobileNo = :mobileNo"),
     @NamedQuery(name = "StudentMaster.findByEmail", query = "SELECT s FROM StudentMaster s WHERE s.email = :email"),
     @NamedQuery(name = "StudentMaster.findByPassword", query = "SELECT s FROM StudentMaster s WHERE s.password = :password"),
-    @NamedQuery(name = "StudentMaster.findByEnrollmentNo", query = "SELECT s FROM StudentMaster s WHERE s.enrollmentNo = :enrollmentNo"),
+    @NamedQuery(name = "StudentMaster.findByRollNo", query = "SELECT s FROM StudentMaster s WHERE s.rollNo = :rollNo"),
     @NamedQuery(name = "StudentMaster.findByCreatedDate", query = "SELECT s FROM StudentMaster s WHERE s.createdDate = :createdDate"),
     @NamedQuery(name = "StudentMaster.findByModifiedDate", query = "SELECT s FROM StudentMaster s WHERE s.modifiedDate = :modifiedDate")})
 public class StudentMaster implements Serializable {
@@ -67,8 +67,8 @@ public class StudentMaster implements Serializable {
     @Column(name = "password")
     private String password;
     @Size(max = 50)
-    @Column(name = "enrollment_no")
-    private String enrollmentNo;
+    @Column(name = "roll_no")
+    private String rollNo;
     @Basic(optional = false)
     @NotNull
     @Column(name = "created_date")
@@ -151,12 +151,12 @@ public class StudentMaster implements Serializable {
         this.password = password;
     }
 
-    public String getEnrollmentNo() {
-        return enrollmentNo;
+    public String getRollNo() {
+        return rollNo;
     }
 
-    public void setEnrollmentNo(String enrollmentNo) {
-        this.enrollmentNo = enrollmentNo;
+    public void setRollNo(String rollNo) {
+        this.rollNo = rollNo;
     }
 
     public Date getCreatedDate() {

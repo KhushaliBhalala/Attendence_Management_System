@@ -8,6 +8,8 @@ import jakarta.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
 
+
+//hello
 @Stateless
 public class SubjectBean {
 

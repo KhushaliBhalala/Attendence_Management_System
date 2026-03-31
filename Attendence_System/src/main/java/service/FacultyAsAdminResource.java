@@ -29,8 +29,6 @@ public class FacultyAsAdminResource {
     public List<SubjectMaster> getSubjects(@PathParam("fid") int fid) {
         return fb.getFacultySubjects(fid);
     }
-    
-    
 
     @GET
     @Path("students/{did}/{sid}")
@@ -45,7 +43,7 @@ public class FacultyAsAdminResource {
             fb.saveStudents(students);
             return Response.ok("{\"message\":\"Success\"}").build();
         } catch (Exception e) {
-            return Response.status(500).entity(e.getMessage()).build();
+            return Response.status(500).entity("{\"error\":\"" + e.getMessage() + "\"}").build();
         }
     }
 }

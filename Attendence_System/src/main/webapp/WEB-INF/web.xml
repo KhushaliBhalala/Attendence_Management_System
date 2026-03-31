@@ -11,14 +11,17 @@
     </context-param>
     
     <context-param>
-    <param-name>primefaces.THEME</param-name>
-    <param-value>saga</param-value> 
-</context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>saga</param-value> 
+    </context-param>
 
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
+        <multipart-config>
+            <max-file-size>2097152</max-file-size> <max-request-size>4194304</max-request-size> <file-size-threshold>0</file-size-threshold>
+        </multipart-config>
     </servlet>
 
     <servlet-mapping>
@@ -26,14 +29,8 @@
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
 
-    <session-config>
-        <session-timeout>30</session-timeout>
-    </session-config>
-
     <welcome-file-list>
         <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
-    
-    
 
 </web-app>

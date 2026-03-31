@@ -8,6 +8,8 @@ import com.mycompany.attendence_system.*;
 import ejb.AdminService;
 import ejb.AuthBean;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.Path;
@@ -24,23 +26,46 @@ import java.util.*;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class AuthResource {
+
+    @PersistenceContext(unitName = "my_persistence_unit")
+    private EntityManager em;
     @Inject
     private AuthBean authService;
 
     @Inject
     private AdminService adminService;
-    
+
     @POST
     @Path("login")
-    public Response login(UserMaster user) {
-        System.out.println("Login Attempt: User=" + user.getUsername() + ", RoleID=" + user.getRoleId().getId());
-        UserMaster authenticated = authService.login(user.getUsername(), user.getPassword(), user.getRoleId().getId());
-        if (authenticated != null) {
-            return Response.ok(authenticated).build();
+    public Response doLogin(UserMaster userReq) {
+        try {
+            UserMaster u = em.createNamedQuery("UserMaster.validate", UserMaster.class)
+                    .setParameter("uname", userReq.getUsername())
+                    .setParameter("pwd", userReq.getPassword())
+                    .setParameter("rid", userReq.getRoleId().getId())
+                    .getSingleResult();
+
+            if (u != null) {
+                // If the user is a Faculty (Role ID 2)
+                if (u.getRoleId().getId() == 2) {
+                    try {
+                        // Fetch the PRIMARY KEY (id) from faculty_master where user_id matches
+                        Integer fid = em.createQuery("SELECT f.id FROM FacultyMaster f WHERE f.userId.id = :uid", Integer.class)
+                                .setParameter("uid", u.getId())
+                                .getSingleResult();
+                        u.setFacultyIdForSession(fid);
+                    } catch (Exception e) {
+                        System.err.println("Faculty record not found for user: " + u.getUsername());
+                    }
+                }
+                return Response.ok(u).build();
+            }
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        return Response.status(Response.Status.UNAUTHORIZED).build();
     }
-    
+
     @GET
     @Path("roles")
     public List<RoleMaster> getRoles() {

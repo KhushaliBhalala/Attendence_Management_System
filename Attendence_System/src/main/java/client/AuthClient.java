@@ -42,7 +42,7 @@ public class AuthClient implements Serializable {
     private int roleId;
     private String message;
     private List<RoleMaster> roles;
-private UserMaster currentUser;
+    private UserMaster currentUser;
     private final String BASE_URL = "http://localhost:8080/Attendence_System/api/auth";
 
     public List<RoleMaster> getRoles() {
@@ -72,7 +72,7 @@ private UserMaster currentUser;
         RoleMaster rm = new RoleMaster();
         rm.setId(roleId);
         userReq.setRoleId(rm);
-        
+
         System.out.println("UI Role ID : " + roleId);
 
         try {
@@ -82,6 +82,7 @@ private UserMaster currentUser;
 
             if (res.getStatus() == 200) {
                 UserMaster authenticatedUser = res.readEntity(UserMaster.class);
+                this.currentUser = authenticatedUser;
                 System.out.println("Authenticated User: " + authenticatedUser.getUsername());
 
                 // Ensure the nested roleId object is not null
@@ -91,11 +92,13 @@ private UserMaster currentUser;
 
                     if (userRole == 1) {
                         return "admin/admin_dashboard?faces-redirect=true";
-                    }
-                    else if (userRole == 2) {
+                    } else if (userRole == 2) {
+                        if (authenticatedUser.getFacultyId() == null) {
+                            System.err.println("Error: Faculty ID missing for this user!");
+                        }
                         return "/faculty/faculty_dashboard.xhtml?faces-redirect=true";
                     }
-                    
+
                     return "student_dashboard?faces-redirect=true";
                 }
                 return null;
@@ -141,7 +144,7 @@ private UserMaster currentUser;
     public void setRoles(List<RoleMaster> roles) {
         this.roles = roles;
     }
-    
+
     public UserMaster getCurrentUser() {
         return currentUser;
     }
