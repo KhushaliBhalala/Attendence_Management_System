@@ -67,9 +67,16 @@
                     <span>Smart Attendance</span>
                 </div>
                 <nav class="menu">
-                    <h:link outcome="admin_dashboard"><i class="fas fa-chart-line"></i> Dashboard</h:link>
-                    <h:link outcome="manage_faculty" styleClass="active"><i class="fas fa-chalkboard-teacher"></i> Manage Faculty</h:link>
-                    <h:link outcome="manage_subjects"><i class="fas fa-book"></i> Subjects</h:link>
+                     <h:link outcome="admin_dashboard.xhtml" styleClass="active"><i class="fas fa-chart-line"></i> Dashboard</h:link>
+                <h:link outcome="manage_faculty.xhtml"><i class="fas fa-chalkboard-teacher"></i> Manage Faculty</h:link>
+                <h:link outcome="manage_students.xhtml"><i class="fas fa-user-graduate"></i> Manage Students</h:link>
+                <h:link outcome="manage_subjects.xhtml"><i class="fas fa-book"></i> Subjects</h:link>
+                <h:link outcome="view_reports.xhtml"><i class="fas fa-file-invoice"></i> Attendance Reports</h:link>
+                <h:form>
+                    <p:commandLink action="#{authBean.logout()}" styleClass="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </p:commandLink>
+                </h:form>
                 </nav>
             </aside>
 
@@ -137,7 +144,7 @@
                         <p:outputLabel value="Full Name" styleClass="modern-label" />
                         <div class="input-with-icon">
                             <i class="fas fa-user"></i>
-                            <p:inputText value="#{facultyClient.faculty.name}" required="true" placeholder="John Doe" />
+                            <p:inputText value="#{facultyClient.faculty.name}" required="true" placeholder="Mr.Patel" />
                         </div>
                     </div>
 
@@ -161,7 +168,7 @@
                         <p:outputLabel value="Login Username" styleClass="modern-label" />
                         <div class="input-with-icon">
                             <i class="fas fa-at"></i>
-                            <p:inputText value="#{facultyClient.username}" required="true" placeholder="johndoe123" />
+                            <p:inputText value="#{facultyClient.username}" required="true" placeholder="abc123" />
                         </div>
                     </div>
 

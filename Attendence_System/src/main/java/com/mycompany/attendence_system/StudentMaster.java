@@ -4,6 +4,7 @@
  */
 package com.mycompany.attendence_system;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -79,12 +80,14 @@ public class StudentMaster implements Serializable {
     @Column(name = "modified_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedDate;
+
     @JoinColumn(name = "semester_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
     private SemesterMaster semesterId;
     @JoinColumn(name = "division_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
     private DivisionMaster divisionId;
+
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private UserMaster userId;
@@ -224,6 +227,10 @@ public class StudentMaster implements Serializable {
         this.attendanceMasterCollection = attendanceMasterCollection;
     }
 
+    @OneToMany(mappedBy = "semesterId")
+    @JsonbTransient // આ હોવું જ જોઈએ, નહીંતર 500 Error આવશે
+    private Collection<StudentMaster> studentMasterCollection;
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -248,5 +255,5 @@ public class StudentMaster implements Serializable {
     public String toString() {
         return "com.mycompany.attendence_system.StudentMaster[ id=" + id + " ]";
     }
-    
+
 }
