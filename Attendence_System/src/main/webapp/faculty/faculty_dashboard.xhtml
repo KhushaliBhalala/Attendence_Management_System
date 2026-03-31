@@ -1,51 +1,235 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Faculty Dashboard | Smart Attendance</title>
-        <h:outputStylesheet name="css/faculty.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+        <style>
+            :root {
+                --primary-purple: #6750A4;
+                --dark-purple: #21005D;
+                --light-lilac: #F3E5F5;
+                --bg-gradient: linear-gradient(135deg, #F3E5F5 0%, #D1C4E9 100%);
+                --surface: #FFFFFF;
+            }
+
+            body {
+                margin: 0;
+                font-family: 'Poppins', sans-serif;
+                background: var(--bg-gradient);
+                background-attachment: fixed;
+                color: var(--dark-purple);
+            }
+
+            .dashboard-container {
+                display: flex;
+                min-height: 100vh;
+            }
+
+            /* Sidebar Styling */
+            .sidebar {
+                width: 280px;
+                background: var(--dark-purple);
+                padding: 30px 20px;
+                display: flex;
+                flex-direction: column;
+                box-shadow: 10px 0 30px rgba(33, 0, 93, 0.1);
+            }
+
+            .sidebar .logo {
+                color: #FFFFFF;
+                font-size: 22px;
+                font-weight: 700;
+                margin-bottom: 50px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                letter-spacing: 0.5px;
+            }
+
+            .menu a, .logout-btn {
+                color: #D1C4E9;
+                padding: 14px 20px;
+                margin-bottom: 10px;
+                border-radius: 16px;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                transition: all 0.3s ease;
+                font-weight: 500;
+            }
+
+            .menu a:hover, .menu a.active {
+                background: rgba(255, 255, 255, 0.1);
+                color: #FFFFFF;
+                transform: translateX(5px);
+            }
+
+            .logout-btn {
+                margin-top: auto;
+                color: #FFB4AB !important;
+                border: 1px solid rgba(255, 180, 171, 0.2);
+            }
+
+            /* Main Content Styling */
+            .main-content {
+                flex: 1;
+                padding: 40px 50px;
+            }
+
+            .top-nav {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 40px;
+            }
+
+            .top-nav h2 {
+                font-size: 28px;
+                font-weight: 700;
+                margin: 0;
+            }
+
+            .user-profile {
+                background: var(--surface);
+                padding: 8px 20px;
+                border-radius: 50px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+                font-weight: 600;
+            }
+
+            /* Info Card for Welcome */
+            .welcome-card {
+                background: var(--surface);
+                padding: 30px;
+                border-radius: 24px;
+                box-shadow: 0 15px 35px rgba(103, 80, 164, 0.1);
+                margin-bottom: 40px;
+                border-left: 6px solid var(--primary-purple);
+            }
+
+            .welcome-card h3 { margin: 0; color: var(--dark-purple); font-size: 22px; }
+            .welcome-card p { margin: 10px 0 0; color: #625B71; }
+
+            /* Action Grid */
+            .action-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 25px;
+            }
+
+            .action-card {
+                background: var(--surface);
+                padding: 25px;
+                border-radius: 20px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                text-decoration: none;
+                color: inherit;
+                transition: all 0.3s ease;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+                border: 1px solid rgba(255, 255, 255, 0.5);
+            }
+
+            .action-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 15px 35px rgba(103, 80, 164, 0.12);
+            }
+
+            .icon-box {
+                width: 60px;
+                height: 60px;
+                background: var(--light-lilac);
+                color: var(--primary-purple);
+                border-radius: 15px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+            }
+
+            .card-info h4 { margin: 0; font-size: 18px; color: var(--dark-purple); }
+            .card-info p { margin: 5px 0 0; font-size: 13px; color: #718096; }
+
+        </style>
     </h:head>
-
     <h:body>
-        <div class="dashboard-wrapper">
-            <div class="header-glass">
-                <div class="user-info">
-                    <h1>Welcome, Professor</h1>
-                    <p>Manage your subjects, students, and attendance from one place.</p>
+        <div class="dashboard-container">
+            <aside class="sidebar">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Smart Attendance</span>
                 </div>
-            </div>
+                <nav class="menu">
+                    <h:link outcome="faculty_dashboard.xhtml" styleClass="active">
+                        <i class="fas fa-home"></i> Dashboard
+                    </h:link>
+                    <h:link outcome="take_attendence.xhtml">
+                        <i class="fas fa-check-square"></i> Take Attendance
+                    </h:link>
+                    <h:link outcome="attendence_reports.xhtml">
+                        <i class="fas fa-file-alt"></i> My Reports
+                    </h:link>
+                    
+                    <h:form style="margin-top: auto;">
+                        <h:commandLink action="#{authBean.logout()}" styleClass="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </h:commandLink>
+                    </h:form>
+                </nav>
+            </aside>
 
-          <div class="content-grid">
-    <p:link outcome="take_attendence" styleClass="action-card purple-shade">
-        <div class="icon-box"><i class="fas fa-user-check"></i></div>
-        <div class="card-text">
-            <h3>Take Attendance</h3>
-            <p>Mark presence for current lectures</p>
-        </div>
-    </p:link>
+            <main class="main-content">
+                <header class="top-nav">
+                    <h2>Faculty Portal</h2>
+                    <div class="user-profile">
+                        <i class="fas fa-user-tie"></i> Welcome, Professor
+                    </div>
+                </header>
 
-<!--    <p:link outcome="import_students" styleClass="action-card blue-shade">
-        <div class="icon-box"><i class="fas fa-file-import"></i></div>
-        <div class="card-text">
-            <h3>Student Enrollment</h3>
-            <p>Import new students via Excel</p>
-        </div>
-    </p:link>-->
+                <div class="welcome-card">
+                    <h3>Welcome back!</h3>
+                    <p>Manage your subjects, students, and attendance efficiently from one place.</p>
+                </div>
 
-<!--    <p:link outcome="reports" styleClass="action-card green-shade">
-        <div class="icon-box"><i class="fas fa-chart-pie"></i></div>
-        <div class="card-text">
-            <h3>Reports</h3>
-            <p>Analyze attendance percentage</p>
-        </div>
-    </p:link>-->
-</div>
+                <div class="action-grid">
+                    <h:link outcome="take_attendence.xhtml" styleClass="action-card">
+                        <div class="icon-box">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="card-info">
+                            <h4>Take Attendance</h4>
+                            <p>Mark presence for current lectures</p>
+                        </div>
+                    </h:link>
+
+                    <h:link outcome="manage_lectures.xhtml" styleClass="action-card">
+                        <div class="icon-box">
+                            <i class="fas fa-list-ol"></i>
+                        </div>
+                        <div class="card-info">
+                            <h4>Add Total Lectures</h4>
+                            <p>Update lecture counts per subject</p>
+                        </div>
+                    </h:link>
+
+                    <h:link outcome="attendence_reports.xhtml" styleClass="action-card">
+                        <div class="icon-box">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="card-info">
+                            <h4>Student Reports</h4>
+                            <p>View detailed attendance analysis</p>
+                        </div>
+                    </h:link>
+                </div>
+            </main>
         </div>
     </h:body>
-</ui:composition>
+</html>

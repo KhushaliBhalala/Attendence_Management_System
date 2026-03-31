@@ -2,112 +2,75 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
-
 <h:head>
-    <title>Smart Attendance | Welcome to the Dashboard!!!</title>
+    <title>Smart Attendance | Welcome</title>
     <style>
         body {
-            /*background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #F3E5F5 0%, #D1C4E9 100%);
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* આનાથી ઉપર નીચે સ્પેસ જળવાઈ રહેશે */
+            min-height: 100vh;
             margin: 0;
         }
-        .compact-card {
-            background: rgba(255, 255, 255, 1);
-            padding: 30px 40px; /* આજુબાજુ અને ઉપર નીચે પ્રોપર પેડિંગ */
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        .wrapper {
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 12px 40px rgba(103, 80, 164, 0.15);
             text-align: center;
-            width: 380px; /* વિડ્થ થોડી ઘટાડી છે */
-            transition: all 0.3s ease;
+            width: 380px;
         }
-        .header-title {
-            color: #2d3748;
-            margin: 10px 0 5px 0;
-            font-size: 1.6em; /* ફોન્ટ સાઈઝ ઘટાડી છે */
-            font-weight: 700;
+        .brand-logo {
+            background: #F3E5F5;
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            border-radius: 15px;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
         }
-        .subtitle {
-            color: #718096;
-            margin-bottom: 25px;
-            font-size: 0.85em; /* નાની અને ક્લીન ફોન્ટ સાઈઝ */
-            line-height: 1.4;
-        }
-        .btn-primary-custom {
-            background: #4a90e2 !important;
+        .title { color: #21005D; font-weight: 700; margin-bottom: 5px; }
+        .subtitle { color: #625B71; font-size: 0.9rem; margin-bottom: 2rem; }
+        
+        .btn-primary {
+            width: 100%;
+            background: #6750A4 !important;
             border: none !important;
-            width: 100%;
-            padding: 10px !important; /* બટન હાઈટ ઓછી કરી છે */
-            border-radius: 10px !important;
+            padding: 12px !important;
+            border-radius: 100px !important;
             font-weight: 600 !important;
-            font-size: 0.95em !important;
-            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2) !important;
+            margin-bottom: 15px !important;
         }
-        .btn-secondary-custom {
+        .btn-outline {
             width: 100%;
-            margin-top: 10px !important;
-            padding: 10px !important;
-            border-radius: 10px !important;
-            font-weight: 600 !important;
-            font-size: 0.95em !important;
-            color: #4a90e2 !important;
-            border: 1.5px solid #4a90e2 !important;
             background: transparent !important;
+            color: #6750A4 !important;
+            border: 1.5px solid #6750A4 !important;
+            padding: 12px !important;
+            border-radius: 100px !important;
+            font-weight: 600 !important;
         }
-        .divider {
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            color: #cbd5e0;
-            font-size: 0.75em;
-            font-weight: bold;
-        }
-        .divider::before, .divider::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: #edf2f7;
-        }
-        .divider span {
-            padding: 0 10px;
-        }
-        .footer-note {
-            margin-top: 25px;
-            font-size: 0.75em;
-            color: #a0aec0;
-            letter-spacing: 0.5px;
-        }
+        .divider { margin: 20px 0; color: #CAC4D0; font-size: 0.8rem; display: flex; align-items: center; }
+        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #EDF2F7; margin: 0 10px; }
     </style>
 </h:head>
-
 <h:body>
-    <div class="compact-card">
-        <div style="font-size: 35px;">🎓</div>
-        <h1 class="header-title">Smart Attendance</h1>
-        <p class="subtitle">Efficient campus management via real-time attendance tracking.</p>
+    <div class="wrapper">
+        <div class="brand-logo">🎓</div>
+        <h1 class="title">Smart Attendance</h1>
+        <p class="subtitle">Efficient campus management via real-time tracking.</p>
         
-        <h:form id="mainForm">
-            <p:commandButton value="Login to Portal" 
-                             action="login?faces-redirect=true" 
-                             ajax="false"
-                             styleClass="btn-primary-custom" 
-                             icon="pi pi-sign-in" />
-
-            <div class="divider">
-                <span>OR</span>
-            </div>
-
-            <p:commandButton value="Create Student Account" 
-                             action="register_student?faces-redirect=true" 
-                             ajax="false"
-                             styleClass="btn-secondary-custom" 
-                             icon="pi pi-user-plus" />
+        <h:form>
+            <p:commandButton value="Login to Portal" action="login?faces-redirect=true" 
+                             styleClass="btn-primary" icon="pi pi-sign-in" ajax="false"/>
             
+<!--            <div class="divider">OR</div>
+            
+            <p:commandButton value="Create Student Account" action="register_student?faces-redirect=true" 
+                             styleClass="btn-outline" icon="pi pi-user-plus" ajax="false"/>-->
         </h:form>
     </div>
 </h:body>

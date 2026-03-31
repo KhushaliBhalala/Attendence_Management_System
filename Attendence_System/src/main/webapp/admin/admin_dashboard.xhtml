@@ -4,77 +4,265 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-<h:head>
-    <title>Admin Dashboard | Smart Attendance</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet" />
-    <h:outputStylesheet name="css/dashboard.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-</h:head>
-<h:body>
-    <div class="dashboard-container">
-        <aside class="sidebar">
-            <div class="logo">
-                <i class="fas fa-shield-halved"></i>
-                <span>Smart Attendance</span>
-            </div>
-            <nav class="menu">
-                <h:link outcome="admin_dashboard.xhtml" styleClass="active"><i class="fas fa-chart-line"></i> Dashboard</h:link>
-                <h:link outcome="manage_faculty.xhtml"><i class="fas fa-chalkboard-teacher"></i> Manage Faculty</h:link>
-                <h:link outcome="manage_students.xhtml"><i class="fas fa-user-graduate"></i> Manage Students</h:link>
-                <h:link outcome="manage_subjects.xhtml"><i class="fas fa-book"></i> Subjects</h:link>
-                <h:link outcome="view_reports.xhtml"><i class="fas fa-file-invoice"></i> Attendance Reports</h:link>
-                <h:form>
-                    <p:commandLink action="#{authBean.logout()}" styleClass="logout-btn">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </p:commandLink>
-                </h:form>
-            </nav>
-        </aside>
+    <h:head>
+        <title>Admin Dashboard | Smart Attendance</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+        <style>
+            :root {
+                --primary-purple: #6750A4;
+                --dark-purple: #21005D;
+                --light-lilac: #F3E5F5;
+                --bg-gradient: linear-gradient(135deg, #F3E5F5 0%, #D1C4E9 100%);
+                --surface: #FFFFFF;
+            }
 
-        <main class="main-content">
-            <header class="top-nav">
-                <h2>Welcome, Admin</h2>
-                <div class="user-profile">
-                    <span>Admin Profile</span>
-                    <p:graphicImage value="/resources/images/admin-avatar.png" width="40" rendered="false"/>
-                </div>
-            </header>
+            body {
+                margin: 0;
+                font-family: 'Poppins', sans-serif;
+                background: var(--bg-gradient);
+                background-attachment: fixed;
+                color: var(--dark-purple);
+            }
 
-            <div class="stats-grid">
-                <div class="stat-card purple">
-                    <i class="fas fa-users"></i>
-                    <div class="info">
-                        <h3>Total Students</h3>
-                        <p>1,250</p> 
-                    </div>
-                </div>
-                <div class="stat-card lavender">
-                    <i class="fas fa-user-tie"></i>
-                    <div class="info">
-                        <h3>Total Faculty</h3>
-                        <p>45</p>
-                    </div>
-                </div>
-                <div class="stat-card purple-light">
-                    <i class="fas fa-calendar-check"></i>
-                    <div class="info">
-                        <h3>Today's Attendance</h3>
-                        <p>85%</p>
-                    </div>
-                </div>
-            </div>
+            .dashboard-container {
+                display: flex;
+                min-height: 100vh;
+            }
 
-            <div class="recent-activity">
-                <h3>System Overview</h3>
-                <p:panel header="Quick Actions" styleClass="custom-panel">
-                    <div class="action-buttons">
-                        <p:button value="Add Faculty" icon="pi pi-plus" outcome="manage_faculty.xhtml" styleClass="ui-button-raised ui-button-help"/>
-                        <p:button value="Add Student" icon="pi pi-plus" outcome="manage_students.xhtml" styleClass="ui-button-raised ui-button-secondary"/>
-                        <p:button value="Generate Report" icon="pi pi-file" outcome="view_reports.xhtml" styleClass="ui-button-outlined ui-button-help"/>
+            /* Sidebar Styling */
+            .sidebar {
+                width: 280px;
+                background: var(--dark-purple);
+                padding: 30px 20px;
+                display: flex;
+                flex-direction: column;
+                box-shadow: 10px 0 30px rgba(33, 0, 93, 0.1);
+            }
+
+            .sidebar .logo {
+                color: #FFFFFF;
+                font-size: 22px;
+                font-weight: 700;
+                margin-bottom: 50px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                letter-spacing: 0.5px;
+            }
+
+            .menu a, .logout-btn {
+                color: #D1C4E9;
+                padding: 14px 20px;
+                margin-bottom: 10px;
+                border-radius: 16px;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                transition: all 0.3s ease;
+                font-weight: 500;
+            }
+
+            .menu a:hover, .menu a.active {
+                background: rgba(255, 255, 255, 0.1);
+                color: #FFFFFF;
+                transform: translateX(5px);
+            }
+
+            .logout-btn {
+                margin-top: auto;
+                color: #FFB4AB !important;
+                border: 1px solid rgba(255, 180, 171, 0.2);
+            }
+
+            /* Main Content Styling */
+            .main-content {
+                flex: 1;
+                padding: 40px 50px;
+            }
+
+            .top-nav {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 40px;
+            }
+
+            .top-nav h2 {
+                font-size: 28px;
+                font-weight: 700;
+                margin: 0;
+            }
+
+            .user-profile {
+                background: var(--surface);
+                padding: 8px 20px;
+                border-radius: 50px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+                font-weight: 600;
+            }
+
+            /* Stat Cards Styling */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 30px;
+                margin-bottom: 50px;
+            }
+
+            .stat-card {
+                background: var(--surface);
+                padding: 30px;
+                border-radius: 24px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                box-shadow: 0 15px 35px rgba(103, 80, 164, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.5);
+                transition: transform 0.3s ease;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-10px);
+            }
+
+            .stat-card i {
+                font-size: 2.5rem;
+                color: var(--primary-purple);
+                background: var(--light-lilac);
+                width: 70px;
+                height: 70px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 20px;
+            }
+
+            .stat-card h3 {
+                margin: 0;
+                font-size: 14px;
+                color: #625B71;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+            .stat-card p {
+                margin: 5px 0 0;
+                font-size: 32px;
+                font-weight: 700;
+                color: var(--dark-purple);
+            }
+
+            /* Quick Action Panel */
+            .custom-panel {
+                background: var(--surface) !important;
+                border-radius: 24px !important;
+                border: none !important;
+                padding: 20px !important;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+            }
+
+            .action-buttons {
+                display: flex;
+                gap: 15px;
+                padding-top: 15px;
+            }
+
+            .ui-button {
+                border-radius: 12px !important;
+                padding: 10px 20px !important;
+                font-weight: 600 !important;
+                transition: all 0.3s !important;
+            }
+
+            .btn-purple {
+                background: var(--primary-purple) !important;
+                border: none !important;
+            }
+
+            .btn-outline-purple {
+                background: transparent !important;
+                color: var(--primary-purple) !important;
+                border: 1.5px solid var(--primary-purple) !important;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <div class="dashboard-container">
+            <aside class="sidebar">
+                <div class="logo">
+                    <i class="fas fa-shield-halved"></i>
+                    <span>Smart Attendance</span>
+                </div>
+                <nav class="menu">
+                    <h:link outcome="admin_dashboard.xhtml" styleClass="active">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </h:link>
+                    <h:link outcome="manage_faculty.xhtml">
+                        <i class="fas fa-chalkboard-teacher"></i> Faculty
+                    </h:link>
+                    <h:link outcome="manage_students.xhtml">
+                        <i class="fas fa-user-graduate"></i> Students
+                    </h:link>
+                    <h:link outcome="manage_subjects.xhtml">
+                        <i class="fas fa-book"></i> Subjects
+                    </h:link>
+                    <!--                <h:link outcome="view_reports.xhtml">
+                                        <i class="fas fa-file-invoice"></i> Reports
+                                    </h:link>
+                    -->
+                    <h:form style="margin-top: auto;">
+                        <h:commandLink action="#{authBean.logout()}" 
+                                       styleClass="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </h:commandLink>
+                    </h:form>
+                </nav>
+            </aside>
+
+            <main class="main-content">
+                <header class="top-nav">
+                    <h2>Welcome, Admin</h2>
+                    <div class="user-profile">
+                        <i class="fas fa-user-circle"></i> Admin Profile
                     </div>
-                </p:panel>
-            </div>
-        </main>
-    </div>
-</h:body>
+                </header>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <div class="info">
+                            <h3>Total Students</h3>
+                            <p>1,250</p> 
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-user-tie"></i>
+                        <div class="info">
+                            <h3>Total Faculty</h3>
+                            <p>45</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-calendar-check"></i>
+                        <div class="info">
+                            <h3>Attendance</h3>
+                            <p>85%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity-section">
+                    <p:panel header="System Overview" styleClass="custom-panel">
+                        <div class="action-buttons">
+                            <p:button value="Add Faculty" icon="pi pi-plus" outcome="manage_faculty.xhtml" styleClass="btn-purple"/>
+                            <p:button value="Add Student" icon="pi pi-plus" outcome="manage_students.xhtml" styleClass="btn-purple"/>
+                            <p:button value="Generate Report" icon="pi pi-file-pdf" outcome="view_reports.xhtml" styleClass="btn-outline-purple"/>
+                        </div>
+                    </p:panel>
+                </div>
+            </main>
+        </div>
+    </h:body>
 </html>

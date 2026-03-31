@@ -7,20 +7,24 @@ package ejb;
 import com.mycompany.attendence_system.UserMaster;
 import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.io.IOException;
 
 /**
  *
  * @author HP
  */
+@Named(value = "authBean")
 @Stateless
 @LocalBean
 public class AuthBean {
-    
+
     @PersistenceContext(unitName = "my_persistence_unit")
     private EntityManager em;
-    
+
     public UserMaster login(String username, String password, Integer roleId) {
         try {
             return em.createNamedQuery("UserMaster.validate", UserMaster.class)
@@ -29,7 +33,19 @@ public class AuthBean {
                     .setParameter("rid", roleId)
                     .getSingleResult();
         } catch (Exception e) {
-            return null; 
+            return null;
+        }
+    }
+
+  public void logout() {
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.getExternalContext().invalidateSession();
+            
+            String path = context.getExternalContext().getRequestContextPath();
+            context.getExternalContext().redirect(path + "/login.xhtml");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

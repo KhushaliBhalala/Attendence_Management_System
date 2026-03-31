@@ -1,5 +1,6 @@
 package com.mycompany.attendence_system;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -92,6 +93,8 @@ public class StudentMaster implements Serializable {
     @ManyToOne
     private UserMaster modifiedBy;
     @OneToMany(mappedBy = "studentId")
+    
+    @JsonbTransient
     private Collection<AttendanceMaster> attendanceMasterCollection;
 
     @Transient
