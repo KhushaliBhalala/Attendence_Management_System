@@ -5,7 +5,6 @@
 package client;
 
 import com.mycompany.attendence_system.FacultyMaster;
-import com.mycompany.attendence_system.SubjectMaster;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -23,9 +22,10 @@ import java.util.List;
  *
  * @author HP
  */
-@Named(value = "facultyClient") 
+@Named(value = "facultyClient")
 @SessionScoped
 public class FacultyClient implements Serializable {
+
     private FacultyMaster faculty = new FacultyMaster();
     private String username;
     private String password;
@@ -33,8 +33,6 @@ public class FacultyClient implements Serializable {
     private List<FacultyMaster> facultyList;
 
     private final String BASE_URL = "http://localhost:8081/Attendence_System/api/faculty";    
- 
-
 
     public List<FacultyMaster> getFacultyList() {
         if (facultyList == null) {
@@ -42,7 +40,8 @@ public class FacultyClient implements Serializable {
             try {
                 facultyList = client.target(BASE_URL)
                         .request(MediaType.APPLICATION_JSON)
-                        .get(new GenericType<List<FacultyMaster>>() {});
+                        .get(new GenericType<List<FacultyMaster>>() {
+                        });
             } finally {
                 client.close();
             }
@@ -50,11 +49,16 @@ public class FacultyClient implements Serializable {
         return facultyList;
     }
 
+    public String save() {
+        if (this.faculty == null || this.faculty.getId() == null) {
+            return addFaculty();
+        } else {
+            return updateFaculty();
+        }
+    }
+
     public String addFaculty() {
-        Client client = ClientBuilder.newClient();
-        try {
-            // We pass username/password/subjectId as query params or a wrapper object
-            // Here, for simplicity, we use the structure expected by your logic
+        try (Client client = ClientBuilder.newClient()) {
             Response res = client.target(BASE_URL + "/add")
                     .queryParam("uname", username)
                     .queryParam("pwd", password)
@@ -63,31 +67,96 @@ public class FacultyClient implements Serializable {
                     .post(Entity.entity(faculty, MediaType.APPLICATION_JSON));
 
             if (res.getStatus() == 200 || res.getStatus() == 204) {
-                FacesContext.getCurrentInstance().addMessage(null, 
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Faculty Registered"));
-                
-                // Reset form
-                this.faculty = new FacultyMaster();
-                this.username = "";
-                this.password = "";
-                this.facultyList = null; 
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Faculty Added"));
+
+                resetForm();
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public void resetForm() {
+        this.faculty = new FacultyMaster();
+        this.username = "";
+        this.password = "";
+        this.selectedSubjectId = null;
+        this.facultyList = null; 
+    }
+
+    public FacultyMaster getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(FacultyMaster faculty) {
+        this.faculty = faculty;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Integer getSelectedSubjectId() {
+        return selectedSubjectId;
+    }
+
+    public void setSelectedSubjectId(Integer selectedSubjectId) {
+        this.selectedSubjectId = selectedSubjectId;
+    }
+
+// Edit load the dialog box
+    public void prepareEdit(FacultyMaster f) {
+        this.faculty = f;
+        this.username = (f.getUserId() != null) ? f.getUserId().getUsername() : "";
+        this.password = f.getPassword(); // અથવા user_master માંથી લો
+        this.selectedSubjectId = (f.getSubjectId() != null) ? f.getSubjectId().getId() : null;
+    }
+
+// Update 
+    public String updateFaculty() {
+        Client client = ClientBuilder.newClient();
+        try {
+            Response res = client.target(BASE_URL + "/update")
+                    .queryParam("uname", username)
+                    .queryParam("pwd", password)
+                    .queryParam("subId", selectedSubjectId)
+                    .request(MediaType.APPLICATION_JSON)
+                    .put(Entity.entity(faculty, MediaType.APPLICATION_JSON));
+
+            if (res.getStatus() == 200) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Faculty Updated"));
+                this.facultyList = null; // List રિફ્રેશ કરવા
             }
         } finally {
             client.close();
         }
         return null;
     }
-    
-    public FacultyMaster getFaculty() { return faculty; }
-    public void setFaculty(FacultyMaster faculty) { this.faculty = faculty; }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-
-    public Integer getSelectedSubjectId() { return selectedSubjectId; }
-    public void setSelectedSubjectId(Integer selectedSubjectId) { this.selectedSubjectId = selectedSubjectId; }
-    
+// Delete 
+    public void delete(Integer id) {
+        Client client = ClientBuilder.newClient();
+        try {
+            Response res = client.target(BASE_URL + "/delete/" + id).request().delete();
+            if (res.getStatus() == 200) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Faculty Deleted"));
+                this.facultyList = null;
+            }
+        } finally {
+            client.close();
+        }
+    }
 }
