@@ -19,6 +19,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -38,12 +39,6 @@ import java.util.Date;
 })
 public class SemesterMaster implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
     @Basic(optional = false)
     @NotNull
     @Column(name = "semester_no")
@@ -53,6 +48,17 @@ public class SemesterMaster implements Serializable {
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
+    @OneToMany(mappedBy = "semesterId")
+    private Collection<StudentMaster> studentMasterCollection;
+    @OneToMany(mappedBy = "semesterId")
+    private Collection<ClassMaster> classMasterCollection;
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
    
     @OneToMany(mappedBy = "semesterId")
      @JsonbTransient
@@ -121,6 +127,24 @@ public class SemesterMaster implements Serializable {
     @Override
     public String toString() {
         return "com.mycompany.attendence_system.SemesterMaster[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Collection<StudentMaster> getStudentMasterCollection() {
+        return studentMasterCollection;
+    }
+
+    public void setStudentMasterCollection(Collection<StudentMaster> studentMasterCollection) {
+        this.studentMasterCollection = studentMasterCollection;
+    }
+
+    @XmlTransient
+    public Collection<ClassMaster> getClassMasterCollection() {
+        return classMasterCollection;
+    }
+
+    public void setClassMasterCollection(Collection<ClassMaster> classMasterCollection) {
+        this.classMasterCollection = classMasterCollection;
     }
 
 }

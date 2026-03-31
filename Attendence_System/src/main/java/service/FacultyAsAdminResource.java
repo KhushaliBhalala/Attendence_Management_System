@@ -46,4 +46,15 @@ public class FacultyAsAdminResource {
             return Response.status(500).entity("{\"error\":\"" + e.getMessage() + "\"}").build();
         }
     }
+
+    @POST
+    @Path("submit/{fid}/{sid}")
+    public Response submitAttendance(@PathParam("fid") int fid, @PathParam("sid") int sid, List<StudentMaster> studentList) {
+        try {
+            fb.saveAttendance(fid, sid, studentList);
+            return Response.ok().build();
+        } catch (Exception e) {
+            return Response.status(500).entity(e.getMessage()).build();
+        }
+    }
 }

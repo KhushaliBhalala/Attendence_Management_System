@@ -42,31 +42,32 @@ import java.util.Date;
     @NamedQuery(name = "DivisionMaster.findByModifiedDate", query = "SELECT d FROM DivisionMaster d WHERE d.modifiedDate = :modifiedDate")})
 public class DivisionMaster implements Serializable {
 
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 10)
+    @Column(name = "division_name")
+    private String divisionName;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "created_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdDate;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "modified_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date modifiedDate;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
-    @Column(name = "division_name")
-    private String divisionName;
     @Column(name = "created_by")
     private Integer createdBy;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "created_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
     @Column(name = "modified_by")
     private Integer modifiedBy;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "modified_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date modifiedDate;
     @OneToMany(mappedBy = "divisionId")
     @JsonbTransient
     private Collection<StudentMaster> studentMasterCollection;
@@ -177,6 +178,5 @@ public class DivisionMaster implements Serializable {
     @Override
     public String toString() {
         return "com.mycompany.attendence_system.DivisionMaster[ id=" + id + " ]";
-    }
-    
+    }   
 }

@@ -97,6 +97,9 @@ public class StudentMaster implements Serializable {
     @Transient
     private boolean isPresent;
 
+    @Transient
+private double attendancePercentage;
+    
     public boolean isPresent() {
         return isPresent;
     }
@@ -260,4 +263,7 @@ public class StudentMaster implements Serializable {
     public void setRollNo(String rollNo) {
         this.rollNo = rollNo;
     }
+    
+    public double getAttendancePercentage() { return attendancePercentage; }
+public void setAttendancePercentage(double attendancePercentage) { this.attendancePercentage = attendancePercentage; }
 }
