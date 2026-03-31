@@ -218,22 +218,53 @@ public class FacultyAsAdminClient implements Serializable {
         }
     }
 
-    public void submitAttendance() {
-        List<StudentMaster> presentStudents = new ArrayList<>();
-        for (StudentMaster s : students) {
-            if (s.isPresent()) {
-                presentStudents.add(s);
-            }
-        }
-
-        if (presentStudents.isEmpty()) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_WARN, "No Selection", "Please mark at least one student present."));
-            return;
-        }
-        // Logic to save attendance records...
+    public void saveAttendance(int facultyId, int subjectId, List<StudentMaster> studentList) {
+    Date today = new Date();
+    
+    // 1. Update ClassMaster (Increment total lectures for this class)
+    // Assuming one record exists per Faculty-Subject-Division-Semester
+    try {
+        ClassMaster cm = em.createQuery("SELECT c FROM ClassMaster c WHERE c.facultyId.id = :fid AND c.subjectId = :sid", ClassMaster.class)
+                .setParameter("fid", facultyId)
+                .setParameter("sid", subjectId)
+                .getSingleResult();
+        cm.setTotalLectures(cm.getTotalLectures() + 1);
+        cm.setModifiedDate(today);
+        em.merge(cm);
+    } catch (Exception e) {
+        // If ClassMaster record doesn't exist, you might want to create one here
     }
 
+    // 2. Save individual student attendance
+    for (StudentMaster s : studentList) {
+        AttendanceMaster am = new AttendanceMaster();
+        am.setAttendanceDate(today);
+        am.setFacultyId(em.find(FacultyMaster.class, facultyId));
+        am.setSubjectId(em.find(SubjectMaster.class, subjectId));
+        am.setStudentId(em.find(StudentMaster.class, s.getId()));
+        am.setStatus(s.isPresent() ? 'P' : 'A');
+        am.setCreatedDate(today);
+        am.setModifiedDate(today);
+        em.persist(am);
+    }
+}
+
+public List<Object[]> getAttendanceReport(int divisionId, int semesterId, int subjectId) {
+    // This query calculates: Student Name, Total Present, Total Lectures, and Percentage
+    return em.createQuery(
+        "SELECT s.name, " +
+        "SUM(CASE WHEN a.status = 'P' THEN 1 ELSE 0 END), " +
+        "c.totalLectures, " +
+        "(CAST(SUM(CASE WHEN a.status = 'P' THEN 1 ELSE 0 END) AS float) / c.totalLectures * 100) " +
+        "FROM AttendanceMaster a JOIN a.studentId s, ClassMaster c " +
+        "WHERE s.divisionId.id = :did AND s.semesterId.id = :sid AND a.subjectId.id = :subid " +
+        "AND c.divisionId.id = :did AND c.semesterId.id = :sid AND c.subjectId = :subid " +
+        "GROUP BY s.name, c.totalLectures", Object[].class)
+        .setParameter("did", divisionId)
+        .setParameter("sid", semesterId)
+        .setParameter("subid", subjectId)
+        .getResultList();
+}
     public Date getAttendanceDate() {
         return attendanceDate;
     }
