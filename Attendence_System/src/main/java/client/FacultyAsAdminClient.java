@@ -1,6 +1,9 @@
 package client;
 
+import com.mycompany.attendence_system.AttendanceMaster;
+import com.mycompany.attendence_system.ClassMaster;
 import com.mycompany.attendence_system.DivisionMaster;
+import com.mycompany.attendence_system.FacultyMaster;
 import com.mycompany.attendence_system.SemesterMaster;
 import com.mycompany.attendence_system.StudentMaster;
 import com.mycompany.attendence_system.SubjectMaster;
@@ -11,6 +14,8 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -27,6 +32,10 @@ import java.util.Date;
 @Named(value = "facultyAttendanceClient")
 @SessionScoped
 public class FacultyAsAdminClient implements Serializable {
+    
+    
+    @PersistenceContext(unitName = "my_persistence_unit")
+    private EntityManager em;
 
     @Inject
     private AuthClient authClient;
