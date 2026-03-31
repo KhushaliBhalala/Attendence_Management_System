@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.attendence_system;
 
 import jakarta.persistence.Basic;
@@ -97,7 +93,8 @@ public class StudentMaster implements Serializable {
     private UserMaster modifiedBy;
     @OneToMany(mappedBy = "studentId")
     private Collection<AttendanceMaster> attendanceMasterCollection;
-  @Transient
+
+    @Transient
     private boolean isPresent;
 
     public boolean isPresent() {
@@ -107,7 +104,6 @@ public class StudentMaster implements Serializable {
     public void setPresent(boolean isPresent) {
         this.isPresent = isPresent;
     }
-// Add getter and setter
 
     public StudentMaster() {
     }
@@ -161,14 +157,6 @@ public class StudentMaster implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getRollNo() {
-        return rollNo;
-    }
-
-    public void setRollNo(String rollNo) {
-        this.rollNo = rollNo;
     }
 
     public Date getCreatedDate() {
@@ -235,6 +223,10 @@ public class StudentMaster implements Serializable {
     public void setAttendanceMasterCollection(Collection<AttendanceMaster> attendanceMasterCollection) {
         this.attendanceMasterCollection = attendanceMasterCollection;
     }
+    //
+    //    @OneToMany(mappedBy = "semesterId")
+    //    @JsonbTransient // આ હોવું જ જોઈએ, નહીંતર 500 Error આવશે
+    //    private Collection<StudentMaster> studentMasterCollection;
 
     @Override
     public int hashCode() {
@@ -261,5 +253,11 @@ public class StudentMaster implements Serializable {
         return "com.mycompany.attendence_system.StudentMaster[ id=" + id + " ]";
     }
 
+    public String getRollNo() {
+        return rollNo;
+    }
 
+    public void setRollNo(String rollNo) {
+        this.rollNo = rollNo;
+    }
 }

@@ -42,8 +42,10 @@ public class AuthClient implements Serializable {
     private int roleId;
     private String message;
     private List<RoleMaster> roles;
+
     private UserMaster currentUser;
     private final String BASE_URL = "http://localhost:8080/Attendence_System/api/auth";
+
 
     public List<RoleMaster> getRoles() {
         if (roles == null) {

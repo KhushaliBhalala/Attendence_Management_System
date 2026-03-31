@@ -1,7 +1,11 @@
 package ejb;
 
+import com.mycompany.attendence_system.DivisionMaster;
+import com.mycompany.attendence_system.RoleMaster;
 import com.mycompany.attendence_system.SemesterMaster;
+import com.mycompany.attendence_system.StudentMaster;
 import com.mycompany.attendence_system.SubjectMaster;
+import com.mycompany.attendence_system.UserMaster;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -24,18 +28,39 @@ public class SubjectBean {
         return em.createNamedQuery("SemesterMaster.findAll", SemesterMaster.class).getResultList();
     }
 
-    public void addSubject(String name, String code, int semesterId) {
-        SubjectMaster sm = new SubjectMaster();
-        sm.setSubjectName(name);
-        sm.setSubjectCode(code);
-        // Find the actual Semester object from DB
-        SemesterMaster sem = em.find(SemesterMaster.class, semesterId);
-        if (sem != null) {
+public void addSubject(String name, String code, Integer semesterId) { 
+    SubjectMaster sm = new SubjectMaster();
+    sm.setSubjectName(name);
+    sm.setSubjectCode(code);
+    
+    SemesterMaster sem = em.find(SemesterMaster.class, semesterId);
+    if (sem != null) {
+        sm.setSemesterId(sem);
+        sm.setCreatedDate(new Date());
+        em.persist(sm);
+    }
+}
+    public void updateSubject(int id, String name, String code, int semesterId) {
+        SubjectMaster sm = em.find(SubjectMaster.class, id);
+        if (sm != null) {
+            sm.setSubjectName(name);
+            sm.setSubjectCode(code);
+            SemesterMaster sem = em.find(SemesterMaster.class, semesterId);
             sm.setSemesterId(sem);
-            sm.setCreatedDate(new Date());
-            em.persist(sm);
-        } else {
-            throw new RuntimeException("Semester not found with ID: " + semesterId);
+            em.merge(sm);
         }
     }
+
+ public void deleteSubject(int id) {
+    try {
+        SubjectMaster sm = em.find(SubjectMaster.class, id);
+        if (sm != null) {
+            
+            em.remove(em.merge(sm));
+            em.flush(); 
+        }
+    } catch (Exception e) {
+        throw new RuntimeException("not delete bez use in another");
+    }
+}
 }
