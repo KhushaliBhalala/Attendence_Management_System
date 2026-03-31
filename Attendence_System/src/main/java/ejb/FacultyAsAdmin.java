@@ -82,29 +82,25 @@ public class FacultyAsAdmin {
                 .getResultList();
 
             if (!existingReports.isEmpty()) {
-                // --- UPDATE (Biji vakht mate) ---
+                // --- UPDATE ---
                 AttendenceReport report = existingReports.get(0);
                 if (s.isPresent()) {
                     report.setTotalPresent(report.getTotalPresent() + 1);
-                    report.setTotalAbsent(report.getTotalAbsent() - 1); // Absent ghataeli rakshe
-                } else {
-                    // Jo student absent hoy to present same rahese pan absent entry nathi badalvani
-                    // Pan tamara logic mujab jo total lectures fix hoy, to Present vadhe to Absent ghatvu joie.
-                    // Jo student absent che to report ma kain change nahi thay (already initial ma set che).
+                    report.setTotalAbsent(report.getTotalAbsent() - 1); 
                 }
                 em.merge(report);
             } else {
-                // --- INSERT (First Time mate) ---
+                // --- INSERT ---
                 AttendenceReport report = new AttendenceReport();
                 report.setClassId(cm);
                 report.setAttendenceId(am);
                 
                 if (s.isPresent()) {
                     report.setTotalPresent(1);
-                    report.setTotalAbsent(classTotalLectures - 1); // 40 - 1 = 39
+                    report.setTotalAbsent(classTotalLectures - 1);
                 } else {
                     report.setTotalPresent(0);
-                    report.setTotalAbsent(classTotalLectures);     // 40
+                    report.setTotalAbsent(classTotalLectures);     
                 }
                 em.persist(report);
             }
