@@ -113,7 +113,5 @@ public class RoleMaster implements Serializable {
     public String toString() {
         return "com.mycompany.attendence_system.RoleMaster[ id=" + id + " ]";
     }
-
-  
     
 }

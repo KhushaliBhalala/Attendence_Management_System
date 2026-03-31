@@ -7,20 +7,19 @@ package com.mycompany.attendence_system;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -41,34 +40,34 @@ import java.util.Date;
     @NamedQuery(name = "ClassMaster.findByModifiedDate", query = "SELECT c FROM ClassMaster c WHERE c.modifiedDate = :modifiedDate")})
 public class ClassMaster implements Serializable {
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "created_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "modified_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date modifiedDate;
-    @OneToMany(mappedBy = "classId")
-    private Collection<AttendenceReport> attendenceReportCollection;
-    @JoinColumn(name = "subject_id", referencedColumnName = "id")
-    @ManyToOne
-    private SubjectMaster subjectId;
-
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "id")
     private Integer id;
+//    @Column(name = "subject_id")
+//    private Integer subjectId;
     @Column(name = "total_lectures")
     private Integer totalLectures;
     @Column(name = "created_by")
     private Integer createdBy;
+    @Basic(optional = false)
+
+    @Column(name = "created_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdDate;
     @Column(name = "modified_by")
     private Integer modifiedBy;
+    @Basic(optional = false)
+
+    @Column(name = "modified_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date modifiedDate;
+
+    @JoinColumn(name = "subject_id", referencedColumnName = "id")
+    @ManyToOne
+    private SubjectMaster subjectId; // Integer ની જગ્યાએ SubjectMaster ઓબ્જેક્ટ
     @JoinColumn(name = "faculty_id", referencedColumnName = "id")
     @ManyToOne
     private FacultyMaster facultyId;
@@ -100,7 +99,7 @@ public class ClassMaster implements Serializable {
         this.id = id;
     }
 
-    public SubjectMaster  getSubjectId() {
+    public SubjectMaster getSubjectId() {
         return subjectId;
     }
 
@@ -197,14 +196,4 @@ public class ClassMaster implements Serializable {
         return "com.mycompany.attendence_system.ClassMaster[ id=" + id + " ]";
     }
 
-  
-
-    @XmlTransient
-    public Collection<AttendenceReport> getAttendenceReportCollection() {
-        return attendenceReportCollection;
-    }
-
-    public void setAttendenceReportCollection(Collection<AttendenceReport> attendenceReportCollection) {
-        this.attendenceReportCollection = attendenceReportCollection;
-    }
 }

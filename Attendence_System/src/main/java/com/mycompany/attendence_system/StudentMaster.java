@@ -95,17 +95,14 @@ public class StudentMaster implements Serializable {
     private Collection<AttendanceMaster> attendanceMasterCollection;
 
     @Transient
-    private boolean isPresent;
+    private boolean Present;
 
-    @Transient
-private double attendancePercentage;
-    
     public boolean isPresent() {
-        return isPresent;
+        return Present;
     }
 
     public void setPresent(boolean isPresent) {
-        this.isPresent = isPresent;
+        this.Present = isPresent;
     }
 
     public StudentMaster() {
@@ -250,6 +247,8 @@ private double attendancePercentage;
         }
         return true;
     }
+    
+    
 
     @Override
     public String toString() {
@@ -263,7 +262,4 @@ private double attendancePercentage;
     public void setRollNo(String rollNo) {
         this.rollNo = rollNo;
     }
-    
-    public double getAttendancePercentage() { return attendancePercentage; }
-public void setAttendancePercentage(double attendancePercentage) { this.attendancePercentage = attendancePercentage; }
 }

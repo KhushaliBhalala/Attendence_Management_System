@@ -7,34 +7,12 @@
     <h:head>
         <title>Smart Attendance | Faculty Portal</title>
         <style>
-            body {
-                background-color: #f4f7fe;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            }
-            .ui-panel-titlebar {
-                background: #2d2654 !important;
-                color: white !important;
-                border: none !important;
-            }
-            .card-container {
-                background: white;
-                border-radius: 15px;
-                padding: 20px;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            }
-            .ui-button-success {
-                background: #6c5ce7 !important;
-                border-color: #6c5ce7 !important;
-            }
-            .ui-datatable-header {
-                background: #f8f9fa !important;
-                border: none !important;
-                text-align: left !important;
-            }
-            .status-present {
-                color: #2ecc71;
-                font-weight: bold;
-            }
+            body { background-color: #f4f7fe; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+            .ui-panel-titlebar { background: #2d2654 !important; color: white !important; border: none !important; }
+            .card-container { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+            .ui-button-success { background: #6c5ce7 !important; border-color: #6c5ce7 !important; }
+            .ui-datatable-header { background: #f8f9fa !important; border: none !important; text-align: left !important; }
+            .status-present { color: #2ecc71; font-weight: bold; }
         </style>
     </h:head>
     <h:body>
@@ -63,13 +41,7 @@
                     </p:selectOneMenu>
 
                     <p:outputLabel value="Date:" style="font-weight: bold;"/>
-                    <p:calendar value="#{facultyAttendanceClient.attendanceDate}" 
-                pattern="dd-MM-yyyy" 
-                navigator="true" 
-                yearRange="c-1:c+1"
-                readonlyInput="false">
-        <p:ajax event="dateSelect" listener="#{facultyAttendanceClient.loadStudents}" update="studentTable messages" />
-    </p:calendar>
+                    <p:calendar value="#{facultyAttendanceClient.attendanceDate}" pattern="dd-MM-yyyy" disabled="false" />
                 </h:panelGrid>
 
                 <p:separator style="margin: 20px 0;"/>
@@ -105,11 +77,6 @@
 
                     <p:column headerText="Student Name" sortBy="#{stu.name}" filterBy="#{stu.name}" filterMatchMode="contains" filterStyle="display:none">
                         <h:outputText value="#{stu.name}" />
-                    </p:column>
-
-                    <p:column headerText="Attendance %" style="text-align: center;">
-                        <h:outputText value="#{stu.attendancePercentage}%" 
-                                      style="color: #{stu.attendancePercentage lt 75 ? 'red' : 'green'}; font-weight: bold;" />
                     </p:column>
 
                     <p:column style="text-align: center; width: 150px;">

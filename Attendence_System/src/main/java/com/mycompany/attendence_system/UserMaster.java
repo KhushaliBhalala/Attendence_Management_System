@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.Date;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
-import jakarta.xml.bind.annotation.XmlTransient;
 import java.util.Collection;
 
 /**
@@ -50,25 +49,18 @@ import java.util.Collection;
 
 public class UserMaster implements Serializable {
 
-    @Size(max = 100)
-    @Column(name = "username")
-    private String username;
-    @Size(max = 100)
-    @Column(name = "password")
-    private String password;
-    @OneToMany(mappedBy = "userId")
-    private Collection<StudentMaster> studentMasterCollection;
-    @OneToMany(mappedBy = "createdBy")
-    private Collection<StudentMaster> studentMasterCollection1;
-    @OneToMany(mappedBy = "modifiedBy")
-    private Collection<StudentMaster> studentMasterCollection2;
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+    @Size(max = 100)
+    @Column(name = "username")
+    private String username;
+    @Size(max = 100)
+    @Column(name = "password")
+    private String password;
     @Column(name = "created_by")
     private Integer createdBy;
     @Column(name = "created_at")
@@ -131,6 +123,21 @@ public void setFacultyIdForSession(Integer facultyIdForSession) {
         this.id = id;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public Integer getCreatedBy() {
         return createdBy;
@@ -195,49 +202,6 @@ public void setFacultyIdForSession(Integer facultyIdForSession) {
     @Override
     public String toString() {
         return "com.mycompany.attendence_system.UserMaster[ id=" + id + " ]";
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @XmlTransient
-    public Collection<StudentMaster> getStudentMasterCollection() {
-        return studentMasterCollection;
-    }
-
-    public void setStudentMasterCollection(Collection<StudentMaster> studentMasterCollection) {
-        this.studentMasterCollection = studentMasterCollection;
-    }
-
-    @XmlTransient
-    public Collection<StudentMaster> getStudentMasterCollection1() {
-        return studentMasterCollection1;
-    }
-
-    public void setStudentMasterCollection1(Collection<StudentMaster> studentMasterCollection1) {
-        this.studentMasterCollection1 = studentMasterCollection1;
-    }
-
-    @XmlTransient
-    public Collection<StudentMaster> getStudentMasterCollection2() {
-        return studentMasterCollection2;
-    }
-
-    public void setStudentMasterCollection2(Collection<StudentMaster> studentMasterCollection2) {
-        this.studentMasterCollection2 = studentMasterCollection2;
     }
 
 }

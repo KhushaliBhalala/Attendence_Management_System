@@ -16,16 +16,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -44,6 +41,12 @@ import java.util.Date;
    })
 public class SubjectMaster implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
@@ -57,19 +60,6 @@ public class SubjectMaster implements Serializable {
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
-    @OneToMany(mappedBy = "subjectId")
-    private Collection<FacultyMaster> facultyMasterCollection;
-    @OneToMany(mappedBy = "subjectId")
-    private Collection<AttendanceMaster> attendanceMasterCollection;
-    @OneToMany(mappedBy = "subjectId")
-    private Collection<ClassMaster> classMasterCollection;
-
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
     @JoinColumn(name = "semester_id", referencedColumnName = "id")
     @ManyToOne
     private SemesterMaster semesterId;
@@ -155,33 +145,6 @@ public class SubjectMaster implements Serializable {
     @Override
     public String toString() {
         return "com.mycompany.attendence_system.SubjectMaster[ id=" + id + " ]";
-    }
-
-    @XmlTransient
-    public Collection<FacultyMaster> getFacultyMasterCollection() {
-        return facultyMasterCollection;
-    }
-
-    public void setFacultyMasterCollection(Collection<FacultyMaster> facultyMasterCollection) {
-        this.facultyMasterCollection = facultyMasterCollection;
-    }
-
-    @XmlTransient
-    public Collection<AttendanceMaster> getAttendanceMasterCollection() {
-        return attendanceMasterCollection;
-    }
-
-    public void setAttendanceMasterCollection(Collection<AttendanceMaster> attendanceMasterCollection) {
-        this.attendanceMasterCollection = attendanceMasterCollection;
-    }
-
-    @XmlTransient
-    public Collection<ClassMaster> getClassMasterCollection() {
-        return classMasterCollection;
-    }
-
-    public void setClassMasterCollection(Collection<ClassMaster> classMasterCollection) {
-        this.classMasterCollection = classMasterCollection;
     }
     
 }

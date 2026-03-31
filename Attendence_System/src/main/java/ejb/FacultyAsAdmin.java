@@ -1,6 +1,7 @@
 package ejb;
 
 import com.mycompany.attendence_system.AttendanceMaster;
+import com.mycompany.attendence_system.AttendenceReport;
 import com.mycompany.attendence_system.ClassMaster;
 import com.mycompany.attendence_system.DivisionMaster;
 import com.mycompany.attendence_system.FacultyMaster;
@@ -39,37 +40,79 @@ public class FacultyAsAdmin {
     }
 
     
-    public void saveAttendance(int facultyId, int subjectId, List<StudentMaster> studentList) {
+  public void saveAttendance(int facultyId, int subjectId, List<StudentMaster> studentList) {
     Date today = new Date();
     
-    // 1. Update ClassMaster (Increment total lectures for this class)
-    // Assuming one record exists per Faculty-Subject-Division-Semester
+    // 1. Fetch ClassMaster (Fakat total lectures janva mate, badlav karva mate nahi)
+    ClassMaster cm;
     try {
-        ClassMaster cm = em.createQuery("SELECT c FROM ClassMaster c WHERE c.facultyId.id = :fid AND c.subjectId = :sid", ClassMaster.class)
+        cm = em.createQuery("SELECT c FROM ClassMaster c WHERE c.facultyId.id = :fid AND c.subjectId.id = :sid", ClassMaster.class)
                 .setParameter("fid", facultyId)
                 .setParameter("sid", subjectId)
                 .getSingleResult();
-        cm.setTotalLectures(cm.getTotalLectures() + 1);
-        cm.setModifiedDate(today);
-        em.merge(cm);
     } catch (Exception e) {
-        // If ClassMaster record doesn't exist, you might want to create one here
+        System.err.println("ClassMaster record not found: " + e.getMessage());
+        return;
     }
 
-    // 2. Save individual student attendance
+    int classTotalLectures = cm.getTotalLectures(); // Aa fix value rehse (e.g., 40)
+    FacultyMaster faculty = em.find(FacultyMaster.class, facultyId);
+    SubjectMaster subject = em.find(SubjectMaster.class, subjectId);
+
     for (StudentMaster s : studentList) {
+        // 2. AttendanceMaster (Har vakhte entry padse j)
         AttendanceMaster am = new AttendanceMaster();
         am.setAttendanceDate(today);
-        am.setFacultyId(em.find(FacultyMaster.class, facultyId));
-        am.setSubjectId(em.find(SubjectMaster.class, subjectId));
+        am.setFacultyId(faculty);
+        am.setSubjectId(subject);
         am.setStudentId(em.find(StudentMaster.class, s.getId()));
         am.setStatus(s.isPresent() ? 'P' : 'A');
+        am.setCreatedBy(facultyId); 
         am.setCreatedDate(today);
         am.setModifiedDate(today);
         em.persist(am);
+        em.flush(); 
+
+        // 3. AttendenceReport logic
+        try {
+            List<AttendenceReport> existingReports = em.createQuery(
+                "SELECT r FROM AttendenceReport r WHERE r.classId.id = :cid AND r.attendenceId.studentId.id = :sid", AttendenceReport.class)
+                .setParameter("cid", cm.getId())
+                .setParameter("sid", s.getId())
+                .getResultList();
+
+            if (!existingReports.isEmpty()) {
+                // --- UPDATE (Biji vakht mate) ---
+                AttendenceReport report = existingReports.get(0);
+                if (s.isPresent()) {
+                    report.setTotalPresent(report.getTotalPresent() + 1);
+                    report.setTotalAbsent(report.getTotalAbsent() - 1); // Absent ghataeli rakshe
+                } else {
+                    // Jo student absent hoy to present same rahese pan absent entry nathi badalvani
+                    // Pan tamara logic mujab jo total lectures fix hoy, to Present vadhe to Absent ghatvu joie.
+                    // Jo student absent che to report ma kain change nahi thay (already initial ma set che).
+                }
+                em.merge(report);
+            } else {
+                // --- INSERT (First Time mate) ---
+                AttendenceReport report = new AttendenceReport();
+                report.setClassId(cm);
+                report.setAttendenceId(am);
+                
+                if (s.isPresent()) {
+                    report.setTotalPresent(1);
+                    report.setTotalAbsent(classTotalLectures - 1); // 40 - 1 = 39
+                } else {
+                    report.setTotalPresent(0);
+                    report.setTotalAbsent(classTotalLectures);     // 40
+                }
+                em.persist(report);
+            }
+        } catch (Exception e) {
+            System.err.println("Error for student " + s.getId() + ": " + e.getMessage());
+        }
     }
 }
-
 public List<Object[]> getAttendanceReport(int divisionId, int semesterId, int subjectId) {
     // This query calculates: Student Name, Total Present, Total Lectures, and Percentage
     return em.createQuery(
