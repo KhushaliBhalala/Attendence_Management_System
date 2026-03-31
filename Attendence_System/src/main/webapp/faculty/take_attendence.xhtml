@@ -1,66 +1,73 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>Attendance | Smart Attendance</title>
-        <h:outputStylesheet name="css/faculty.css" />
+        <title>Attendance System</title>
     </h:head>
-
     <h:body>
         <h:form id="attendanceForm" enctype="multipart/form-data">
-            <p:growl id="msgs" showDetail="true" />
+            <p:growl id="messages" showDetail="true" />
 
             <p:panel header="Faculty Attendance Portal">
-                <h:outputText value="Logged in as: #{AuthClient.currentUser.username}" style="font-weight:bold; color: #6750A4; display:block; margin-bottom:10px" />
-
-                <h:panelGrid columns="4" cellpadding="10">
-                    <p:outputLabel for="subject" value="Subject:" />
-                    <p:selectOneMenu id="subject" value="#{facultyAttendanceClient.selectedSubject}" 
-                                     required="true" styleClass="form-control-custom">
-                        <f:selectItem itemLabel="-- Select Subject --" itemValue="0" noSelectionOption="true" />
-                        <f:selectItems value="#{facultyAttendanceClient.allSubjects}" 
-                                       var="s" 
-                                       itemLabel="#{s.subjectName}" 
-                                       itemValue="#{s.id}" />
-                        <p:ajax listener="#{facultyAttendanceClient.loadStudents}" update="studentTable" />
+                <h:panelGrid columns="4" cellpadding="7">
+                    <p:outputLabel for="subject" value="Subject: *" />
+                    <p:selectOneMenu id="subject" value="#{facultyAttendanceClient.selectedSubject}">
+                        <f:selectItem itemLabel="Select Subject" itemValue="0" />
+                        <f:selectItems value="#{facultyAttendanceClient.allSubjects}" var="s" 
+                                       itemLabel="#{s.subjectName}" itemValue="#{s.id}" />
+                        <p:ajax listener="#{facultyAttendanceClient.loadStudents}" update="studentTable importPanel messages" />
                     </p:selectOneMenu>
 
-                    <p:outputLabel for="division" value="Division:" />
-                    <p:selectOneMenu id="division" value="#{facultyAttendanceClient.selectedDivision}" required="true">
-                        <p:ajax listener="#{facultyAttendanceClient.loadStudents}" update="studentArea msgs" />
-                        <f:selectItem itemLabel="-- Select Division --" itemValue="" />
+                    <p:outputLabel for="division" value="Division: *" />
+                    <p:selectOneMenu id="division" value="#{facultyAttendanceClient.selectedDivision}">
+                        <f:selectItem itemLabel="Select Division" itemValue="0" />
                         <f:selectItems value="#{facultyAttendanceClient.allDivisions}" var="d" 
                                        itemLabel="#{d.divisionName}" itemValue="#{d.id}" />
+                        <p:ajax listener="#{facultyAttendanceClient.loadStudents}" update="studentTable importPanel messages" />
                     </p:selectOneMenu>
                 </h:panelGrid>
-            </p:panel>
 
-            <p:outputPanel id="studentArea" style="margin-top:20px">
-                <p:panel header="Import Students" rendered="#{empty facultyAttendanceClient.students and facultyAttendanceClient.selectedDivision != 0}">
-                    <p:fileUpload listener="#{facultyAttendanceClient.handleFileUpload}" 
-                                  mode="advanced" update="studentArea msgs" auto="true" />
-                </p:panel>
+                <p:separator />
+
+                <h:panelGroup id="importPanel">
+                    <h:panelGroup rendered="#{empty facultyAttendanceClient.students and facultyAttendanceClient.selectedDivision != 0 and facultyAttendanceClient.selectedSubject != 0}">
+                        <div style="padding: 20px; border: 1px dashed #ccc; text-align: center; margin-bottom: 20px;">
+                            <h3 style="color: #666;">No students found in Database for this selection.</h3>
+                            <p:fileUpload listener="#{facultyAttendanceClient.handleFileUpload}" 
+                                          mode="advanced" 
+                                          dragDropSupport="true"
+                                          update="studentTable importPanel messages" 
+                                          sizeLimit="1000000" 
+                                          allowTypes="/(\.|\/)(xls|xlsx)$/" />
+                        </div>
+                    </h:panelGroup>
+                </h:panelGroup>
 
                 <p:dataTable id="studentTable" value="#{facultyAttendanceClient.students}" var="stu" 
-                             rendered="#{not empty facultyAttendanceClient.students}">
-                    <p:column headerText="Enrollment No">#{stu.enrollmentNo}</p:column>
-                    <p:column headerText="Student Name">#{stu.name}</p:column>
-                    <p:column headerText="Attendance">
-                        <p:selectOneButton value="#{stu.tempStatus}">
-                            <f:selectItem itemLabel="Present" itemValue="P" />
-                            <f:selectItem itemLabel="Absent" itemValue="A" />
-                        </p:selectOneButton>
+                             emptyMessage="Please select Subject and Division first."
+                             style="margin-top: 20px;">
+                    <f:facet name="header">Student List for Attendance</f:facet>
+                    <p:column headerText="Enrollment No">
+                        <h:outputText value="#{stu.rollNo}" />
+                    </p:column>
+                    <p:column headerText="Name">
+                        <h:outputText value="#{stu.name}" />
+                    </p:column>
+                    <p:column headerText="Attendance" style="text-align: center;">
+                        <p:selectBooleanCheckbox value="#{stu.present}" />
                     </p:column>
                 </p:dataTable>
 
-                <p:commandButton value="Save Attendance" action="#{facultyAttendanceClient.submit}" 
-                                 rendered="#{not empty facultyAttendanceClient.students}" style="margin-top:15px" />
-            </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Submit Attendance" 
+                                     action="#{facultyAttendanceClient.submitAttendance}"
+                                     update="messages" 
+                                     styleClass="ui-button-success" />
+                </f:facet>
+            </p:panel>
         </h:form>
     </h:body>
-</ui:composition>
+</html>

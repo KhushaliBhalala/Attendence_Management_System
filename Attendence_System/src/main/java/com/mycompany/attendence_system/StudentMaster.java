@@ -18,6 +18,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -96,6 +97,17 @@ public class StudentMaster implements Serializable {
     private UserMaster modifiedBy;
     @OneToMany(mappedBy = "studentId")
     private Collection<AttendanceMaster> attendanceMasterCollection;
+  @Transient
+    private boolean isPresent;
+
+    public boolean isPresent() {
+        return isPresent;
+    }
+
+    public void setPresent(boolean isPresent) {
+        this.isPresent = isPresent;
+    }
+// Add getter and setter
 
     public StudentMaster() {
     }
@@ -248,5 +260,6 @@ public class StudentMaster implements Serializable {
     public String toString() {
         return "com.mycompany.attendence_system.StudentMaster[ id=" + id + " ]";
     }
-    
+
+
 }

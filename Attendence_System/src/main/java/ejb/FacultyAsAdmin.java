@@ -1,6 +1,11 @@
 package ejb;
 
-import com.mycompany.attendence_system.*;
+import com.mycompany.attendence_system.DivisionMaster;
+import com.mycompany.attendence_system.RoleMaster;
+import com.mycompany.attendence_system.SemesterMaster;
+import com.mycompany.attendence_system.StudentMaster;
+import com.mycompany.attendence_system.SubjectMaster;
+import com.mycompany.attendence_system.UserMaster;
 import jakarta.ejb.LocalBean;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -15,66 +20,70 @@ public class FacultyAsAdmin {
     private EntityManager em;
 
     public List<DivisionMaster> getAllDivisions() {
-        return em.createQuery("SELECT d FROM DivisionMaster d", DivisionMaster.class).getResultList();
+        return em.createNamedQuery("DivisionMaster.findAll", DivisionMaster.class).getResultList();
     }
 
     public List<SubjectMaster> getFacultySubjects(int facultyId) {
         return em.createQuery("SELECT f.subjectId FROM FacultyMaster f WHERE f.id = :fid", SubjectMaster.class)
-                .setParameter("fid", facultyId)
-                .getResultList();
+                .setParameter("fid", facultyId).getResultList();
     }
 
     public List<StudentMaster> getStudentsByDivision(int divisionId, int semesterId) {
         return em.createQuery("SELECT s FROM StudentMaster s WHERE s.divisionId.id = :did AND s.semesterId.id = :sid", StudentMaster.class)
                 .setParameter("did", divisionId)
-                .setParameter("sid", semesterId)
-                .getResultList();
+                .setParameter("sid", semesterId).getResultList();
     }
 
     public void saveStudents(List<StudentMaster> students) {
-        for (StudentMaster s : students) {
-            // 1. Logic for Name before space (First Name)
-            String firstName = "User"; // Fallback default
-            if (s.getName() != null && !s.getName().trim().isEmpty()) {
-                // Split by space and take the first index
-                firstName = s.getName().trim().split("\\s+")[0];
-            }
+    for (StudentMaster s : students) {
+        try {
+            String fullName = s.getName().trim();
+            String firstName = fullName.contains(" ") ? fullName.split("\\s+")[0] : fullName;
+            
+            // ૧. યુનિક યુઝરનેમ બનાવો (FirstName + RollNo)
+            String uniqueUsername = firstName.toLowerCase() + "_" + s.getRollNo();
 
-            // 2. Create and Persist User (UserMaster Table)
             UserMaster studentUser = new UserMaster();
-            studentUser.setUsername(firstName);
-            studentUser.setPassword(firstName);
+            studentUser.setUsername(uniqueUsername);
+            studentUser.setPassword(uniqueUsername); // પાસવર્ડ પણ યુનિક રાખો શરૂઆતમાં
 
-            // Ensure Role ID 3 (Student) exists
             RoleMaster studentRole = em.find(RoleMaster.class, 3);
-            if (studentRole == null) {
-                throw new RuntimeException("Role ID 3 not found in database.");
-            }
+            if (studentRole == null) throw new RuntimeException("Role ID 3 not found.");
+            
             studentUser.setRoleId(studentRole);
             studentUser.setCreatedAt(new java.util.Date());
-           
+
+            // Faculty ID સેટ કરો
+            if (s.getCreatedBy() != null) {
+                studentUser.setCreatedBy(s.getCreatedBy().getId());
+            }
+
             em.persist(studentUser);
-            em.flush(); // Generates the ID for studentUser
+            em.flush(); // આ લાઇન ID જનરેટ કરવા માટે જરૂરી છે
 
-            // 3. Map IDs and set Student Password (StudentMaster Table)
+            // ૨. Student record સેટ કરો
             s.setUserId(studentUser);
-
-            // SETTING PASSWORD IN STUDENT TABLE AS WELL
-            s.setPassword(firstName);
-
-            // Ensure foreign keys are managed entities to avoid "detached entity" errors
+            s.setPassword(uniqueUsername);
+            
+            // Managed Entities શોધો
             s.setSemesterId(em.find(SemesterMaster.class, s.getSemesterId().getId()));
             s.setDivisionId(em.find(DivisionMaster.class, s.getDivisionId().getId()));
-//            s.setCreatedBy(em.find(UserMaster.class, s.getCreatedBy().getId()));
+            
             if (s.getCreatedBy() != null) {
-                UserMaster facultyUser = em.find(UserMaster.class, s.getCreatedBy().getId());
-                s.setCreatedBy(facultyUser);
-                studentUser.setCreatedBy(facultyUser.getId());
+                s.setCreatedBy(em.find(UserMaster.class, s.getCreatedBy().getId()));
             }
-            // These fields are already populated from the Excel parsing in the Client bean
-            // s.setEmail(s.getEmail());
-            // s.setMobileNo(s.getMobileNo());
+            
+            s.setCreatedDate(new java.util.Date());
+            s.setModifiedDate(new java.util.Date());
+
             em.persist(s);
+            System.out.println("Inserted: " + uniqueUsername);
+
+        } catch (Exception e) {
+            System.err.println("Error saving student " + s.getName() + ": " + e.getMessage());
+            // જો એકમાં ભૂલ આવે તો આખું લિસ્ટ અટકી ન જાય તે માટે અહીં લોગ કરો
+            throw e; 
         }
     }
+}
 }

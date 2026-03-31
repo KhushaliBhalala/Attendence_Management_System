@@ -253,4 +253,6 @@ public class FacultyMaster implements Serializable {
         return "com.mycompany.attendence_system.FacultyMaster[ id=" + id + " ]";
     }
     
+    
+    
 }
