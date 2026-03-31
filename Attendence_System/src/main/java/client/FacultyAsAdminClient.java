@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.primefaces.event.FileUploadEvent;
 import org.apache.poi.ss.usermodel.*;
+import java.util.Date;
 
 @Named(value = "facultyAttendanceClient")
 @SessionScoped
@@ -30,13 +31,17 @@ public class FacultyAsAdminClient implements Serializable {
     @Inject
     private AuthClient authClient;
 
+    private Date attendanceDate = new Date();
     private int selectedSubject = 0;
     private int selectedDivision = 0;
     private int selectedSemester = 0;
+    private boolean selectAll;
     private List<StudentMaster> students = new ArrayList<>();
     private List<DivisionMaster> allDivisions;
     private List<SubjectMaster> allSubjects;
-
+    private List<StudentMaster> filteredStudents;
+    private Date currentDate = new Date();
+    private List<StudentMaster> selectedStudentsList;
     private final String BASE_URL = "http://localhost:8080/Attendence_System/api/faculty";
 
     @PostConstruct
@@ -44,13 +49,22 @@ public class FacultyAsAdminClient implements Serializable {
         loadDivisions();
         loadFacultySubjects();
     }
+    
+    public void toggleSelectAll() {
+        if (students != null) {
+            for (StudentMaster s : students) {
+                s.setPresent(selectAll);
+            }
+        }
+    }
 
     public void loadDivisions() {
         Client client = ClientBuilder.newClient();
         try {
             this.allDivisions = client.target(BASE_URL + "/divisions")
                     .request(MediaType.APPLICATION_JSON)
-                    .get(new GenericType<List<DivisionMaster>>() {});
+                    .get(new GenericType<List<DivisionMaster>>() {
+                    });
         } catch (Exception e) {
             System.err.println("Division Load Error: " + e.getMessage());
         } finally {
@@ -66,7 +80,8 @@ public class FacultyAsAdminClient implements Serializable {
                 try {
                     this.allSubjects = client.target(BASE_URL + "/subjects/" + fid)
                             .request(MediaType.APPLICATION_JSON)
-                            .get(new GenericType<List<SubjectMaster>>() {});
+                            .get(new GenericType<List<SubjectMaster>>() {
+                            });
                 } catch (Exception e) {
                     System.err.println("API Error: " + e.getMessage());
                 } finally {
@@ -93,8 +108,9 @@ public class FacultyAsAdminClient implements Serializable {
         try {
             List<StudentMaster> result = client.target(BASE_URL + "/students/" + selectedDivision + "/" + selectedSemester)
                     .request(MediaType.APPLICATION_JSON)
-                    .get(new GenericType<List<StudentMaster>>() {});
-            
+                    .get(new GenericType<List<StudentMaster>>() {
+                    });
+
             this.students = (result != null) ? result : new ArrayList<>();
         } catch (Exception e) {
             this.students = new ArrayList<>();
@@ -123,14 +139,18 @@ public class FacultyAsAdminClient implements Serializable {
             Integer facultyUserId = authClient.getCurrentUser().getId();
 
             for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue; 
+                if (row.getRowNum() == 0) {
+                    continue;
+                }
 
                 Cell rollCell = row.getCell(0);
                 Cell nameCell = row.getCell(1);
                 Cell emailCell = row.getCell(2);
                 Cell mobileCell = row.getCell(3);
 
-                if (rollCell == null || nameCell == null) continue;
+                if (rollCell == null || nameCell == null) {
+                    continue;
+                }
 
                 StudentMaster s = new StudentMaster();
 
@@ -142,7 +162,9 @@ public class FacultyAsAdminClient implements Serializable {
                 String fullName = nameCell.getStringCellValue();
                 s.setName(fullName);
 
-                if (emailCell != null) s.setEmail(emailCell.getStringCellValue());
+                if (emailCell != null) {
+                    s.setEmail(emailCell.getStringCellValue());
+                }
                 if (mobileCell != null) {
                     String mob = (mobileCell.getCellType() == CellType.NUMERIC)
                             ? String.valueOf((long) mobileCell.getNumericCellValue())
@@ -160,12 +182,12 @@ public class FacultyAsAdminClient implements Serializable {
                 s.setSemesterId(sem);
                 s.setDivisionId(div);
                 s.setCreatedBy(creator);
-                
+
                 newStudents.add(s);
             }
 
             saveToDatabase(newStudents);
-            loadStudents(); 
+            loadStudents();
 
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Import Success", "Students Imported and Loaded."));
@@ -177,29 +199,29 @@ public class FacultyAsAdminClient implements Serializable {
     }
 
     private void saveToDatabase(List<StudentMaster> list) {
-    Client client = ClientBuilder.newClient();
-    try {
-        Response response = client.target(BASE_URL).path("import-students")
-                .request(MediaType.APPLICATION_JSON)
-                .post(Entity.entity(list, MediaType.APPLICATION_JSON));
+        Client client = ClientBuilder.newClient();
+        try {
+            Response response = client.target(BASE_URL).path("import-students")
+                    .request(MediaType.APPLICATION_JSON)
+                    .post(Entity.entity(list, MediaType.APPLICATION_JSON));
 
-        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
-            String errorMsg = response.readEntity(String.class);
-            System.err.println("API Error: " + errorMsg);
-            FacesContext.getCurrentInstance().addMessage(null, 
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Database Error", errorMsg));
+            if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+                String errorMsg = response.readEntity(String.class);
+                System.err.println("API Error: " + errorMsg);
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Database Error", errorMsg));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            client.close();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
-        client.close();
     }
-}
 
     public void submitAttendance() {
         List<StudentMaster> presentStudents = new ArrayList<>();
         for (StudentMaster s : students) {
-            if (s.isPresent()) { 
+            if (s.isPresent()) {
                 presentStudents.add(s);
             }
         }
@@ -212,12 +234,56 @@ public class FacultyAsAdminClient implements Serializable {
         // Logic to save attendance records...
     }
 
+    public Date getAttendanceDate() {
+        return attendanceDate;
+    }
+
+    public void setAttendanceDate(Date attendanceDate) {
+        this.attendanceDate = attendanceDate;
+    }
+    
+    public boolean isSelectAll() {
+        return selectAll;
+    }
+
+    public void setSelectAll(boolean selectAll) {
+        this.selectAll = selectAll;
+    }
+    
+    public List<StudentMaster> getFilteredStudents() {
+        return filteredStudents;
+    }
+
+    public void setFilteredStudents(List<StudentMaster> filteredStudents) {
+        this.filteredStudents = filteredStudents;
+    }
+    
     // Getters and Setters
-    public List<DivisionMaster> getAllDivisions() { return allDivisions; }
-    public List<SubjectMaster> getAllSubjects() { return allSubjects; }
-    public int getSelectedSubject() { return selectedSubject; }
-    public void setSelectedSubject(int selectedSubject) { this.selectedSubject = selectedSubject; }
-    public int getSelectedDivision() { return selectedDivision; }
-    public void setSelectedDivision(int selectedDivision) { this.selectedDivision = selectedDivision; }
-    public List<StudentMaster> getStudents() { return students; }
+    public List<DivisionMaster> getAllDivisions() {
+        return allDivisions;
+    }
+
+    public List<SubjectMaster> getAllSubjects() {
+        return allSubjects;
+    }
+
+    public int getSelectedSubject() {
+        return selectedSubject;
+    }
+
+    public void setSelectedSubject(int selectedSubject) {
+        this.selectedSubject = selectedSubject;
+    }
+
+    public int getSelectedDivision() {
+        return selectedDivision;
+    }
+
+    public void setSelectedDivision(int selectedDivision) {
+        this.selectedDivision = selectedDivision;
+    }
+
+    public List<StudentMaster> getStudents() {
+        return students;
+    }
 }

@@ -81,7 +81,6 @@ public class FacultyAsAdmin {
 
         } catch (Exception e) {
             System.err.println("Error saving student " + s.getName() + ": " + e.getMessage());
-            // જો એકમાં ભૂલ આવે તો આખું લિસ્ટ અટકી ન જાય તે માટે અહીં લોગ કરો
             throw e; 
         }
     }
